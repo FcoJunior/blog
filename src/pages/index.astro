@@ -16,8 +16,8 @@ const latestPosts = posts.slice(0, 8);
     <div class="border border-grey-600 rounded-xl p-6">
       <div class="flex flex-col lg:flex-row items-baseline gap-4 lg:justify-between lg:items-center pb-6">
         <div class="font-bold text-3xl lg:flex lg:gap-2">
-          <h1>Reflexões e aprendizados de quem constrói software com</h1>
-          <span class="text-primary-500" id="typed-topic">C#</span>
+          <h1>Reflexões e aprendizados sobre construir software com</h1>
+          <span class="text-primary-500" id="typed-topic"></span>
         </div>
         <div class="flex gap-4 items-center">
           <a href="https://www.instagram.com/devjunr" target="_blank" rel="noreferrer" class="p-3 rounded-full bg-[#ff447a33]" aria-label="Instagram">
@@ -29,9 +29,9 @@ const latestPosts = posts.slice(0, 8);
         </div>
       </div>
       <p class="text-grey-300 pb-10 w-full lg:w-3/5">
-        Aqui no Dev Junior, compartilho aprendizados reais sobre desenvolvimento, arquitetura, .NET e mais.
-        Se quiser acompanhar e trocar ideias, entra na lista da newsletter.
-        Assine a newsletter e faça parte da nossa comunidade de desenvolvedores.
+        Arquitetura, .NET, sistemas distribuídos, DDD, liderança técnica e a construção de produtos e plataformas que precisam funcionar todos os dias.
+
+        Se você também gosta de discutir arquitetura, trade-offs e engenharia de software, assine a newsletter e acompanhe as próximas publicações.
       </p>
       <div class="max-w-3xl">
         <NewsletterForm />
@@ -49,14 +49,26 @@ const latestPosts = posts.slice(0, 8);
   </section>
 
   <script>
-    const topics = ['C#', '.Net', 'Angular', 'DDD', 'Clean Architecture', 'React'];
-    const element = document.getElementById('typed-topic');
-    let index = 0;
+    import Typed from 'typed.js';
 
-    window.setInterval(() => {
-      if (!element) return;
-      index = (index + 1) % topics.length;
-      element.textContent = `${topics[index]}!`;
-    }, 1600);
+    const typedTopic = document.getElementById('typed-topic');
+
+    new Typed('#typed-topic', {
+      strings: [
+        'DDD',
+        'Arquitetura',
+        'Sistemas Distribuídos',
+        'Event Driven',
+        'Cloud',
+        'Product Design',
+      ],
+      typeSpeed: 80,
+      backDelay: 1500,
+      loop: true,
+      onStringTyped: () => {
+        if (!typedTopic) return;
+        typedTopic.innerHTML = `${typedTopic.innerHTML}<span class="text-grey-50">!</span>`;
+      }
+    });
   </script>
 </BaseLayout>
