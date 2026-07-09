@@ -8,6 +8,12 @@ import { getSeoAlternates } from '@utils/seo';
 export async function getStaticPaths() {
   const posts = await getPublishedPostsByLang('en');
   const categories = new Map();
+  const t = getTranslations('en');
+
+  for (const category of t.home.categories) {
+    const slug = slugify(category.name);
+    if (!categories.has(slug)) categories.set(slug, { category: category.name, posts: [] });
+  }
 
   for (const post of posts) {
     const slug = slugify(post.data.category);

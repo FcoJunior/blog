@@ -6,7 +6,7 @@ import HeroSection from '@components/HeroSection.astro';
 import PostGrid from '@components/PostGrid.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { getTranslations, homeUrl } from '@i18n/index';
-import { getFeaturedPost, getPublishedPostsByLang } from '@utils/posts';
+import { getCategoryUrl, getFeaturedPost, getPublishedPostsByLang } from '@utils/posts';
 import { getSeoAlternates } from '@utils/seo';
 
 const lang = 'pt';
@@ -30,13 +30,13 @@ const languageUrls = {
 >
   <HeroSection lang={lang} />
 
-  <section id={t.home.categoriesId} class="page-shell scroll-mt-28 py-12">
+  <section id={t.home.categoriesId} class="page-shell scroll-mt-28 pb-12">
     <div class="mb-8 max-w-2xl">
       <h2 class="text-2xl font-bold text-grey-800 dark:text-grey-50">{t.home.categoriesTitle}</h2>
       <p class="mt-2 text-grey-500 dark:text-grey-300">{t.home.categoriesDescription}</p>
     </div>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {t.home.categories.map((category) => <CategoryCard {...category} />)}
+      {t.home.categories.map((category) => <CategoryCard {...category} href={getCategoryUrl(lang, category.name)} />)}
     </div>
   </section>
 
