@@ -1,5 +1,6 @@
 ---
 import { getTranslations, type Lang } from '@i18n/index';
+import { AUTHOR_NAME, getAuthorAvatarUrl } from '@utils/author';
 import SocialLinks from './SocialLinks.astro';
 
 interface Props {
@@ -12,10 +13,14 @@ const t = getTranslations(lang);
 
 <section id={t.home.authorId} class="page-shell scroll-mt-28 py-16">
   <div class="grid gap-8 rounded-2xl border border-grey-150 bg-grey-25 p-6 dark:border-grey-600 dark:bg-grey-900 sm:p-8 lg:grid-cols-[0.35fr_0.65fr] lg:p-10">
-    <div class="flex items-center justify-center lg:justify-start">
-      <div class="flex aspect-square w-44 items-center justify-center rounded-2xl border border-grey-150 bg-grey-50 text-4xl font-bold text-grey-400 dark:border-grey-600 dark:bg-grey-800 dark:text-grey-300">
-        FJ
-      </div>
+    <div class="flex items-center justify-center">
+      <img
+        class="aspect-square w-44 rounded-2xl border border-grey-150 bg-grey-50 object-cover object-center dark:border-grey-600 dark:bg-grey-800"
+        src={getAuthorAvatarUrl(352)}
+        alt={AUTHOR_NAME}
+        loading="lazy"
+        decoding="async"
+      />
     </div>
     <div>
       <h2 class="text-3xl font-bold text-grey-800 dark:text-grey-50">{t.home.authorTitle}</h2>

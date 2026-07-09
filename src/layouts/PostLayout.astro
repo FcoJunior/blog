@@ -5,6 +5,7 @@ import type { Post } from '@utils/posts';
 import { formatDate, getCategoryUrl, getPostAlternates, getPostCover, getPostUrl } from '@utils/posts';
 import { getSeoAlternates } from '@utils/seo';
 import { homeUrl, type Lang } from '@i18n/index';
+import { AUTHOR_NAME, getAuthorAvatarUrl } from '@utils/author';
 
 interface Props {
   post: Post;
@@ -52,7 +53,7 @@ for (const [itemLang, itemPost] of translatedPosts) {
           <div class="flex flex-col-reverse md:flex-col">
             <div class="not-prose flex flex-wrap items-center justify-start gap-3 py-3 font-mono text-lg text-grey-500 dark:text-grey-200 md:justify-center">
               <div class="flex gap-4 items-center">
-                <img class="avatar avatar-48 photo rounded-full h-12 w-12" src="/images/logo-menu.png" alt="Dev Junior" />
+                <img class="avatar avatar-48 photo h-12 w-12 rounded-full object-cover" src={getAuthorAvatarUrl(96)} alt={AUTHOR_NAME} />
                 <span>Dev Junior</span>
               </div>
               <span class="text-primary-400">-</span>
