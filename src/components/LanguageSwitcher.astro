@@ -8,6 +8,7 @@ interface Props {
 }
 
 const { lang, urls = {} } = Astro.props;
+
 ---
 
 <div class="flex items-center gap-1 rounded-2xl border border-grey-600 bg-grey-700 p-1 text-sm font-semibold text-grey-200">
@@ -16,10 +17,25 @@ const { lang, urls = {} } = Astro.props;
       href={urls[item] ?? homeUrl(item)}
       aria-current={item === lang ? 'true' : undefined}
       class:list={[
-        'rounded-xl px-2 py-1 transition hover:text-grey-50',
+        'flex items-center gap-1.5 rounded-xl px-2 py-1 transition hover:text-grey-50',
         item === lang ? 'bg-primary-600 text-grey-50' : 'text-grey-300'
       ]}
     >
+      {item === 'pt' ? (
+        <svg viewBox="0 0 28 20" class="h-3.5 w-5 rounded-[2px]" aria-hidden="true">
+          <rect width="28" height="20" fill="#009b3a"></rect>
+          <path d="M14 2.5 25 10 14 17.5 3 10Z" fill="#ffdf00"></path>
+          <circle cx="14" cy="10" r="4.2" fill="#002776"></circle>
+          <path d="M10.3 8.9c2.5-.5 5.1-.1 7.4 1" fill="none" stroke="#fff" stroke-width=".8"></path>
+        </svg>
+      ) : (
+        <svg viewBox="0 0 28 20" class="h-3.5 w-5 rounded-[2px]" aria-hidden="true">
+          <rect width="28" height="20" fill="#b22234"></rect>
+          <path d="M0 2h28v2H0zm0 4h28v2H0zm0 4h28v2H0zm0 4h28v2H0zm0 4h28v2H0z" fill="#fff"></path>
+          <rect width="12" height="10.8" fill="#3c3b6e"></rect>
+          <path d="M2 2h1v1H2zm3 0h1v1H5zm3 0h1v1H8zM2 5h1v1H2zm3 0h1v1H5zm3 0h1v1H8zM2 8h1v1H2zm3 0h1v1H5zm3 0h1v1H8z" fill="#fff"></path>
+        </svg>
+      )}
       {languageConfig[item].label}
     </a>
   ))}

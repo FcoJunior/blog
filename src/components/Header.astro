@@ -20,11 +20,6 @@ const t = getTranslations(lang);
         <img class="w-12 lg:w-16" src="/images/logo-menu.png" alt="Dev Junior" />
       </a>
     </div>
-    <ul class="flex items-center grow justify-end gap-8 font-semibold text-grey-200">
-      <li class="hover:text-grey-50">
-        <a href={homeUrl(lang)}>{t.nav.home}</a>
-      </li>
-    </ul>
     <div class="flex items-center gap-3">
       <LanguageSwitcher lang={lang} urls={languageUrls} />
       <SearchCommand lang={lang} />
