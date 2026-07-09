@@ -1,0 +1,32 @@
+---
+title: "Arquitetura limpa na prática"
+description: "Como organizar dependências e casos de uso sem transformar o projeto em cerimônia desnecessária."
+pubDate: 2026-07-09
+updatedDate: 2026-07-09
+slug: "arquitetura-limpa-na-pratica"
+cover: "/images/posts/default-cover.png"
+tags: ["dotnet", "arquitetura", "ddd"]
+category: "Arquitetura"
+draft: false
+---
+
+Projetos crescem melhor quando as dependências apontam para o lugar certo. A ideia central é proteger regra de negócio de detalhes externos, como banco, fila, framework HTTP ou provedor de autenticação.
+
+## O que vale preservar
+
+Uma boa separação deixa casos de uso fáceis de ler, testar e evoluir. O domínio não precisa conhecer o banco, e a camada de apresentação não deveria decidir regra de negócio.
+
+```csharp
+public sealed class CreatePostUseCase
+{
+    public Task Execute(CreatePostInput input)
+    {
+        // Orquestra o caso de uso e delega detalhes para portas.
+        return Task.CompletedTask;
+    }
+}
+```
+
+> Arquitetura boa reduz acoplamento real. Ela não deveria esconder o fluxo principal.
+
+O resultado esperado é um código que comunica intenção e aceita mudança com menos atrito.

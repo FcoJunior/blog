@@ -1,0 +1,37 @@
+<div class="page-shell fixed w-full bg-grey-900 shadow-lg z-20">
+  <nav class="flex gap-8 justify-between pt-8 pb-4">
+    <div>
+      <a href="/" aria-label="Dev Junior">
+        <img class="w-12 lg:w-16" src="/images/logo-menu.png" alt="Dev Junior" />
+      </a>
+    </div>
+    <ul class="flex items-center grow justify-end gap-8 font-semibold text-grey-200">
+      <li class="hover:text-grey-50">
+        <a href="/">Home</a>
+      </li>
+      <li class="hover:text-grey-50">
+        <a href="/search">Buscar</a>
+      </li>
+    </ul>
+    <div class="hidden lg:flex items-center">
+      <form role="search" method="get" action="/search">
+        <div class="flex gap-4">
+          <label class="sr-only" for="q">Buscar por:</label>
+          <input
+            type="text"
+            placeholder="Buscar"
+            autocomplete="off"
+            name="q"
+            id="q"
+            class="bg-grey-600 rounded-2xl py-2 px-4 focus:outline-none placeholder:text-grey-300"
+          />
+          <button type="submit" class="w-6 text-grey-300 hover:text-grey-200" aria-label="Buscar">
+            <svg data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </nav>
+</div>

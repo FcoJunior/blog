@@ -1,0 +1,62 @@
+---
+import NewsletterForm from '@components/NewsletterForm.astro';
+import PostList from '@components/PostList.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getPublishedPosts } from '@utils/posts';
+
+const posts = await getPublishedPosts();
+const latestPosts = posts.slice(0, 8);
+---
+
+<BaseLayout
+  title="Dev Junior"
+  description="Aprendizados reais sobre desenvolvimento, arquitetura, .NET, front-end, DevOps e carreira em tecnologia."
+>
+  <section class="page-shell py-8">
+    <div class="border border-grey-600 rounded-xl p-6">
+      <div class="flex flex-col lg:flex-row items-baseline gap-4 lg:justify-between lg:items-center pb-6">
+        <div class="font-bold text-3xl lg:flex lg:gap-2">
+          <h1>Reflexões e aprendizados de quem constrói software com</h1>
+          <span class="text-primary-500" id="typed-topic">C#</span>
+        </div>
+        <div class="flex gap-4 items-center">
+          <a href="https://www.instagram.com/devjunr" target="_blank" rel="noreferrer" class="p-3 rounded-full bg-[#ff447a33]" aria-label="Instagram">
+            <img src="/images/instagram.png" alt="" />
+          </a>
+          <a href="https://www.linkedin.com/in/fcojunr/" target="_blank" rel="noreferrer" class="p-3 rounded-full bg-[#0277b533]" aria-label="LinkedIn">
+            <img src="/images/linkedin.png" alt="" />
+          </a>
+        </div>
+      </div>
+      <p class="text-grey-300 pb-10 w-full lg:w-3/5">
+        Aqui no Dev Junior, compartilho aprendizados reais sobre desenvolvimento, arquitetura, .NET e mais.
+        Se quiser acompanhar e trocar ideias, entra na lista da newsletter.
+        Assine a newsletter e faça parte da nossa comunidade de desenvolvedores.
+      </p>
+      <div class="max-w-3xl">
+        <NewsletterForm />
+      </div>
+    </div>
+  </section>
+
+  <section class="page-shell py-8">
+    <div class="flex gap-4 items-center pb-8">
+      <hr class="border-grey-600 w-full flex-1" />
+      <h2 class="text-xl font-bold">Artigos</h2>
+      <hr class="border-grey-600 w-full flex-1" />
+    </div>
+    <PostList posts={latestPosts} />
+  </section>
+
+  <script>
+    const topics = ['C#', '.Net', 'Angular', 'DDD', 'Clean Architecture', 'React'];
+    const element = document.getElementById('typed-topic');
+    let index = 0;
+
+    window.setInterval(() => {
+      if (!element) return;
+      index = (index + 1) % topics.length;
+      element.textContent = `${topics[index]}!`;
+    }, 1600);
+  </script>
+</BaseLayout>

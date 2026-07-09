@@ -1,0 +1,20 @@
+---
+import type { Post } from '@utils/posts';
+import PostCard from './PostCard.astro';
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 ? (
+    <aside class="flex flex-col flex-wrap md:flex-row lg:justify-start items-start">
+      {posts.map((post) => <PostCard post={post} />)}
+    </aside>
+  ) : (
+    <p class="text-grey-300">Nenhum artigo publicado por aqui ainda.</p>
+  )
+}

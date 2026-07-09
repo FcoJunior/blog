@@ -1,0 +1,34 @@
+---
+import PostList from '@components/PostList.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getPublishedPosts, slugify } from '@utils/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const categories = new Map();
+
+  for (const post of posts) {
+    const slug = slugify(post.data.category);
+    if (!categories.has(slug)) categories.set(slug, { category: post.data.category, posts: [] });
+    categories.get(slug).posts.push(post);
+  }
+
+  return Array.from(categories.entries()).map(([slug, data]) => ({
+    params: { category: slug },
+    props: data
+  }));
+}
+
+const { category, posts } = Astro.props;
+---
+
+<BaseLayout title={category} description={`Artigos da categoria ${category} no Dev Junior.`}>
+  <section class="page-shell py-8">
+    <div class="flex gap-4 items-center pb-8">
+      <hr class="border-grey-600 w-full flex-1" />
+      <h1 class="text-xl font-bold">{category}</h1>
+      <hr class="border-grey-600 w-full flex-1" />
+    </div>
+    <PostList posts={posts} />
+  </section>
+</BaseLayout>

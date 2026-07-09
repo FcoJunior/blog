@@ -1,0 +1,36 @@
+---
+import PostList from '@components/PostList.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getPublishedPosts, slugify } from '@utils/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const tags = new Map();
+
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      const slug = slugify(tag);
+      if (!tags.has(slug)) tags.set(slug, { tag, posts: [] });
+      tags.get(slug).posts.push(post);
+    }
+  }
+
+  return Array.from(tags.entries()).map(([slug, data]) => ({
+    params: { tag: slug },
+    props: data
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`# ${tag}`} description={`Artigos marcados com ${tag} no Dev Junior.`}>
+  <section class="page-shell py-8">
+    <div class="flex gap-4 items-center pb-8">
+      <hr class="border-grey-600 w-full flex-1" />
+      <h1 class="text-xl font-bold"># {tag}</h1>
+      <hr class="border-grey-600 w-full flex-1" />
+    </div>
+    <PostList posts={posts} />
+  </section>
+</BaseLayout>

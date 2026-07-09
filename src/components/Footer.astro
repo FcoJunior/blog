@@ -1,0 +1,32 @@
+---
+import NewsletterForm from './NewsletterForm.astro';
+---
+
+<aside class="page-shell py-8 bg-grey-700 flex flex-col md:flex-row items-end gap-8">
+  <div class="flex-1">
+    <h3 class="text-2xl font-semibold pb-6">Conteúdo de dev pra dev</h3>
+    <p class="text-grey-300">
+      Se curtir trocar ideia sobre desenvolvimento, arquitetura e o dia a dia real de quem codifica, entra pra newsletter do Dev Junior. Bora juntos.
+    </p>
+  </div>
+  <div class="flex-1 w-full">
+    <NewsletterForm />
+  </div>
+</aside>
+<footer class="page-shell flex justify-between items-center py-8 bg-grey-900 text-grey-200">
+  <div>
+    <span>&copy; Dev Junior {new Date().getFullYear()}</span>
+  </div>
+  <ul class="flex gap-4">
+    <li>
+      <a href="https://www.instagram.com/devjunr" target="_blank" rel="noreferrer" class="fill-grey-300 hover:fill-grey-100" aria-label="Instagram">
+        <img src="/images/instagram.png" alt="" class="h-8 w-8" />
+      </a>
+    </li>
+    <li>
+      <a href="https://www.linkedin.com/in/fcojunr/" target="_blank" rel="noreferrer" class="fill-grey-300 hover:fill-grey-100" aria-label="LinkedIn">
+        <img src="/images/linkedin.png" alt="" class="h-8 w-8" />
+      </a>
+    </li>
+  </ul>
+</footer>
