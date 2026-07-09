@@ -4,7 +4,7 @@ import { getTranslations } from '@i18n/index';
 import { getPublishedPostsByLang, getPostCover, getPostUrl } from '@utils/posts';
 
 export async function GET(context: APIContext) {
-  const lang = 'pt';
+  const lang = 'en';
   const t = getTranslations(lang);
   const posts = await getPublishedPostsByLang(lang);
 

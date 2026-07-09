@@ -1,20 +1,24 @@
 ---
 import type { Post } from '@utils/posts';
 import PostCard from './PostCard.astro';
+import type { Lang } from '@i18n/index';
+import { getTranslations } from '@i18n/index';
 
 interface Props {
   posts: Post[];
+  lang?: Lang;
 }
 
-const { posts } = Astro.props;
+const { posts, lang = 'pt' } = Astro.props;
+const t = getTranslations(lang);
 ---
 
 {
   posts.length > 0 ? (
     <aside class="flex flex-col flex-wrap md:flex-row lg:justify-start items-start">
-      {posts.map((post) => <PostCard post={post} />)}
+      {posts.map((post) => <PostCard post={post} lang={lang} />)}
     </aside>
   ) : (
-    <p class="text-grey-300">Nenhum artigo publicado por aqui ainda.</p>
+    <p class="text-grey-300">{t.posts.empty}</p>
   )
 }

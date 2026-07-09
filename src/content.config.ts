@@ -7,16 +7,18 @@ const posts = defineCollection({
     pattern: '**/*.{md,mdx}',
     base: './src/content/posts'
   }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     slug: z.string().optional(),
-    cover: z.string().default('/images/posts/default-cover.png'),
+    cover: z.union([image(), z.string()]).default('/images/posts/default-cover.png'),
     tags: z.array(z.string()).default([]),
     category: z.string().default('Geral'),
-    draft: z.boolean().default(false)
+    draft: z.boolean().default(false),
+    lang: z.enum(['pt', 'en']),
+    translationKey: z.string()
   })
 });
 

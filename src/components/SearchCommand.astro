@@ -1,10 +1,22 @@
+---
+import type { Lang } from '@i18n/index';
+import { getTranslations } from '@i18n/index';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'pt' } = Astro.props;
+const t = getTranslations(lang);
+---
+
 <button
   type="button"
   data-search-trigger
   class="group flex w-32 items-center justify-between gap-2 rounded-2xl border border-grey-600 bg-grey-700 px-3 py-2 text-left text-grey-300 shadow-lg transition hover:border-primary-500 hover:text-grey-50 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-auto sm:min-w-40 sm:gap-4 sm:px-4"
   aria-haspopup="dialog"
 >
-  <span>Buscar...</span>
+  <span>{t.search.trigger}</span>
   <kbd
     data-search-shortcut
     class="rounded-lg border border-grey-600 bg-grey-900 px-2 py-0.5 font-mono text-xs text-grey-200 group-hover:text-grey-50"
@@ -18,7 +30,7 @@
     type="button"
     data-search-backdrop
     class="absolute inset-0 w-full bg-grey-900/80 backdrop-blur-sm"
-    aria-label="Fechar busca"
+    aria-label={t.search.close}
   >
   </button>
 
@@ -29,18 +41,18 @@
       aria-labelledby="search-command-title"
       class="w-full overflow-hidden rounded-2xl border border-grey-600 bg-grey-900 shadow-2xl ring-1 ring-grey-700"
     >
-      <h2 id="search-command-title" class="sr-only">Buscar artigos</h2>
+      <h2 id="search-command-title" class="sr-only">{t.search.title}</h2>
       <div class="flex items-center gap-3 border-b border-grey-600 px-4 py-3">
         <svg class="h-5 w-5 shrink-0 text-grey-300" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"></path>
         </svg>
-        <label for="search-command-input" class="sr-only">Digite sua busca</label>
+        <label for="search-command-input" class="sr-only">{t.search.inputLabel}</label>
         <input
           id="search-command-input"
           data-search-input
           type="search"
           autocomplete="off"
-          placeholder="Buscar por titulo, conteudo, tag ou categoria"
+          placeholder={t.search.placeholder}
           class="min-w-0 flex-1 bg-transparent py-2 text-lg text-grey-50 placeholder:text-grey-300 focus:outline-none"
         />
         <kbd class="hidden rounded-lg border border-grey-600 px-2 py-1 font-mono text-xs text-grey-300 sm:block">Esc</kbd>
@@ -48,15 +60,15 @@
 
       <div class="max-h-[60vh] overflow-y-auto p-2">
         <p data-search-status class="px-3 py-8 text-center text-grey-300">
-          Digite para buscar nos artigos.
+          {t.search.idle}
         </p>
-        <div data-search-results role="listbox" aria-label="Resultados da busca" class="hidden flex-col gap-1"></div>
+        <div data-search-results role="listbox" aria-label={t.search.resultsLabel} class="hidden flex-col gap-1"></div>
       </div>
     </section>
   </div>
 </div>
 
-<script>
+<script is:inline define:vars={{ lang, messages: t.search }}>
   // @ts-nocheck
   const trigger = document.querySelector('[data-search-trigger]');
   const modal = document.querySelector('[data-search-modal]');
@@ -68,6 +80,7 @@
 
   const isMac = /Mac|iPhone|iPad|iPod/.test(window.navigator.platform);
   const maxResults = 8;
+  const fetchLimit = 24;
   let pagefind;
   let searchTimer;
   let activeIndex = -1;
@@ -171,27 +184,32 @@
     const queryId = ++lastQueryId;
 
     if (!query) {
-      setStatus('Digite para buscar nos artigos.');
+      setStatus(messages.idle);
       return;
     }
 
-    setStatus('Buscando...');
+    setStatus(messages.loading);
 
     try {
       const search = await (await loadPagefind()).debouncedSearch(query, {}, 150);
       if (queryId !== lastQueryId || search === null) return;
 
-      const items = await Promise.all(search.results.slice(0, maxResults).map((result) => result.data()));
+      const items = (await Promise.all(search.results.slice(0, fetchLimit).map((result) => result.data())))
+        .filter((item) => {
+          const url = item.url || '';
+          return lang === 'en' ? url.startsWith('/en/') : !url.startsWith('/en/');
+        })
+        .slice(0, maxResults);
       if (queryId !== lastQueryId) return;
 
       if (!items.length) {
-        setStatus('Nenhum resultado encontrado.');
+        setStatus(messages.empty);
         return;
       }
 
       renderResults(items);
     } catch {
-      setStatus('Busca indisponivel neste modo. Gere o indice Pagefind com npm run build.');
+      setStatus(messages.unavailable);
     }
   };
 
@@ -209,7 +227,7 @@
       await loadPagefind();
     } catch {
       if (input.value.trim()) {
-        setStatus('Busca indisponivel neste modo. Gere o indice Pagefind com npm run build.');
+        setStatus(messages.unavailable);
       }
     }
   };

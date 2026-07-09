@@ -6,7 +6,7 @@ import { articlesUrl, getTranslations, homeUrl } from '@i18n/index';
 import { getPublishedPostsByLang } from '@utils/posts';
 import { getSeoAlternates } from '@utils/seo';
 
-const lang = 'pt';
+const lang = 'en';
 const t = getTranslations(lang);
 const posts = await getPublishedPostsByLang(lang);
 const latestPosts = posts.slice(0, 8);

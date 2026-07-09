@@ -1,9 +1,14 @@
 ---
+import type { Lang } from '@i18n/index';
+import { getTranslations } from '@i18n/index';
+
 interface Props {
   compact?: boolean;
+  lang?: Lang;
 }
 
-const { compact = false } = Astro.props;
+const { compact = false, lang = 'pt' } = Astro.props;
+const t = getTranslations(lang);
 const action = import.meta.env.PUBLIC_NEWSLETTER_ACTION;
 const formClass = compact ? 'flex flex-col gap-2' : 'flex flex-col md:flex-row gap-4';
 const inputClass = compact
@@ -16,10 +21,10 @@ const inputClass = compact
     type="email"
     autocomplete="off"
     name="email"
-    placeholder="Seu e-mail aqui"
+    placeholder={t.newsletter.placeholder}
     class={inputClass}
   />
   <button type="submit" class="bg-primary-600 px-4 py-2 rounded-2xl hover:bg-primary-700">
-    Inscreva-se
+    {t.newsletter.button}
   </button>
 </form>

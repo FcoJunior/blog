@@ -4,7 +4,7 @@ import PostLayout from '@layouts/PostLayout.astro';
 import { getPostSlug, getPublishedPostsByLang } from '@utils/posts';
 
 export async function getStaticPaths() {
-  const posts = await getPublishedPostsByLang('pt');
+  const posts = await getPublishedPostsByLang('en');
 
   return posts.map((post) => ({
     params: { slug: getPostSlug(post) },

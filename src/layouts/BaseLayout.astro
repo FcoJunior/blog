@@ -2,7 +2,14 @@
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import SEO from '@components/SEO.astro';
+import type { Lang } from '@i18n/index';
+import { homeUrl, languageConfig } from '@i18n/index';
 import '@styles/global.css';
+
+interface Alternate {
+  hrefLang: string;
+  href: string;
+}
 
 interface Props {
   title?: string;
@@ -12,13 +19,22 @@ interface Props {
   type?: 'website' | 'article';
   pubDate?: Date;
   updatedDate?: Date;
+  lang?: Lang;
+  alternates?: Alternate[];
+  languageUrls?: Partial<Record<Lang, string>>;
 }
 
 const props = Astro.props;
+const lang = props.lang ?? 'pt';
+const htmlLang = languageConfig[lang].htmlLang;
+const languageUrls = props.languageUrls ?? {
+  pt: homeUrl('pt'),
+  en: homeUrl('en')
+};
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang={htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -29,11 +45,11 @@ const props = Astro.props;
   </head>
   <body>
     <main class="text-grey-50 min-h-screen bg-grey-900">
-      <Header />
+      <Header lang={lang} languageUrls={languageUrls} />
       <div class="pt-24">
         <slot />
       </div>
-      <Footer />
+      <Footer lang={lang} />
     </main>
   </body>
 </html>

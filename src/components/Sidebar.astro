@@ -1,28 +1,31 @@
 ---
 import NewsletterForm from './NewsletterForm.astro';
+import type { Lang } from '@i18n/index';
+import { getTranslations } from '@i18n/index';
 
 interface Props {
   title?: string;
   url?: string;
+  lang?: Lang;
 }
 
-const { title = 'Dev Junior', url = Astro.url.toString() } = Astro.props;
+const { title = 'Dev Junior', url = Astro.url.toString(), lang = 'pt' } = Astro.props;
+const t = getTranslations(lang);
 const shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
 ---
 
 <div class="h-full lg:border-l lg:border-grey-600 lg:px-4 flex flex-col gap-8">
   <div class="flex-col gap-3 hidden lg:flex">
-    <h2 class="font-bold text-lg">Conteúdo de dev pra dev</h2>
+    <h2 class="font-bold text-lg">{t.newsletter.title}</h2>
     <p class="text-grey-300 pb-2">
-      Aqui no Dev Junior, compartilho aprendizados reais sobre desenvolvimento, arquitetura, .NET e mais.
-      Se quiser acompanhar e trocar ideias, entra na lista da newsletter.
+      {t.newsletter.sidebarDescription}
     </p>
-    <NewsletterForm compact />
+    <NewsletterForm compact lang={lang} />
   </div>
   <div>
-    <h3 class="font-semibold mb-2">Compartilhe esse post</h3>
+    <h3 class="font-semibold mb-2">{t.posts.share}</h3>
     <div class="fill-grey-300">
-      <a href={shareUrl} target="_blank" rel="noreferrer" aria-label="Compartilhar no LinkedIn">
+      <a href={shareUrl} target="_blank" rel="noreferrer" aria-label={t.posts.shareLinkedIn}>
         <svg xmlns="http://www.w3.org/2000/svg" height="32" width="28" viewBox="0 0 448 512" aria-hidden="true">
           <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
         </svg>

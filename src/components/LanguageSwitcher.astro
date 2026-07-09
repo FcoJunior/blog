@@ -1,0 +1,26 @@
+---
+import type { Lang } from '@i18n/index';
+import { homeUrl, languageConfig, languages } from '@i18n/index';
+
+interface Props {
+  lang: Lang;
+  urls?: Partial<Record<Lang, string>>;
+}
+
+const { lang, urls = {} } = Astro.props;
+---
+
+<div class="flex items-center gap-1 rounded-2xl border border-grey-600 bg-grey-700 p-1 text-sm font-semibold text-grey-200">
+  {languages.map((item) => (
+    <a
+      href={urls[item] ?? homeUrl(item)}
+      aria-current={item === lang ? 'true' : undefined}
+      class:list={[
+        'rounded-xl px-2 py-1 transition hover:text-grey-50',
+        item === lang ? 'bg-primary-600 text-grey-50' : 'text-grey-300'
+      ]}
+    >
+      {languageConfig[item].label}
+    </a>
+  ))}
+</div>

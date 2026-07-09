@@ -1,5 +1,12 @@
 ---
 import { DEFAULT_COVER } from '@utils/posts';
+import type { Lang } from '@i18n/index';
+import { languageConfig } from '@i18n/index';
+
+interface Alternate {
+  hrefLang: string;
+  href: string;
+}
 
 interface Props {
   title?: string;
@@ -9,6 +16,8 @@ interface Props {
   type?: 'website' | 'article';
   pubDate?: Date;
   updatedDate?: Date;
+  lang?: Lang;
+  alternates?: Alternate[];
 }
 
 const {
@@ -18,13 +27,16 @@ const {
   canonical = Astro.url.pathname,
   type = 'website',
   pubDate,
-  updatedDate
+  updatedDate,
+  lang = 'pt',
+  alternates = []
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://example.com');
 const pageTitle = title === 'Dev Junior' ? title : `${title} | Dev Junior`;
 const canonicalUrl = new URL(canonical, site).toString();
 const imageUrl = new URL(image, site).toString();
+const ogLocale = languageConfig[lang].ogLocale;
 ---
 
 <title>{pageTitle}</title>
@@ -37,6 +49,11 @@ const imageUrl = new URL(image, site).toString();
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:image" content={imageUrl} />
+<meta property="og:locale" content={ogLocale} />
+
+{alternates.map((alternate) => (
+  <link rel="alternate" hreflang={alternate.hrefLang} href={new URL(alternate.href, site).toString()} />
+))}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={pageTitle} />

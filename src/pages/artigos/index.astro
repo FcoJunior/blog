@@ -1,0 +1,33 @@
+---
+import PostList from '@components/PostList.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { articlesUrl, getTranslations } from '@i18n/index';
+import { getPublishedPostsByLang } from '@utils/posts';
+import { getSeoAlternates } from '@utils/seo';
+
+const lang = 'pt';
+const t = getTranslations(lang);
+const posts = await getPublishedPostsByLang(lang);
+const languageUrls = {
+  pt: articlesUrl('pt'),
+  en: articlesUrl('en')
+};
+---
+
+<BaseLayout
+  title={t.posts.articles}
+  description={t.site.description}
+  canonical={languageUrls.pt}
+  lang={lang}
+  languageUrls={languageUrls}
+  alternates={getSeoAlternates(languageUrls)}
+>
+  <section class="page-shell py-8">
+    <div class="flex gap-4 items-center pb-8">
+      <hr class="border-grey-600 w-full flex-1" />
+      <h1 class="text-xl font-bold">{t.posts.articles}</h1>
+      <hr class="border-grey-600 w-full flex-1" />
+    </div>
+    <PostList posts={posts} lang={lang} />
+  </section>
+</BaseLayout>

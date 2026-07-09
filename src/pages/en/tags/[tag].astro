@@ -6,7 +6,7 @@ import { getPublishedPostsByLang, slugify } from '@utils/posts';
 import { getSeoAlternates } from '@utils/seo';
 
 export async function getStaticPaths() {
-  const posts = await getPublishedPostsByLang('pt');
+  const posts = await getPublishedPostsByLang('en');
   const tags = new Map();
 
   for (const post of posts) {
@@ -24,7 +24,7 @@ export async function getStaticPaths() {
 }
 
 const { tag, posts } = Astro.props;
-const lang = 'pt';
+const lang = 'en';
 const t = getTranslations(lang);
 const slug = slugify(tag);
 const languageUrls = {
@@ -35,8 +35,8 @@ const languageUrls = {
 
 <BaseLayout
   title={`# ${tag}`}
-  description={`${t.posts.tagDescription} ${tag} no Dev Junior.`}
-  canonical={languageUrls.pt}
+  description={`${t.posts.tagDescription} ${tag} on Dev Junior.`}
+  canonical={languageUrls.en}
   lang={lang}
   languageUrls={languageUrls}
   alternates={getSeoAlternates(languageUrls)}

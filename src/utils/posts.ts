@@ -1,4 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import type { ImageMetadata } from 'astro';
+import type { Lang } from '@i18n/index';
+import { categoriesUrl, postUrl, tagsUrl } from '@i18n/index';
 
 export type Post = CollectionEntry<'posts'>;
 
@@ -10,23 +13,62 @@ export async function getPublishedPosts() {
   return posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 }
 
+export async function getPublishedPostsByLang(lang: Lang) {
+  const posts = await getPublishedPosts();
+
+  return posts.filter((post) => post.data.lang === lang);
+}
+
+export async function getPostByTranslationKey(translationKey: string, lang: Lang) {
+  const posts = await getPublishedPosts();
+
+  return posts.find((post) => post.data.translationKey === translationKey && post.data.lang === lang);
+}
+
+export async function getPostAlternates(post: Post) {
+  const posts = await getPublishedPosts();
+  const alternates = new Map<Lang, Post>();
+
+  for (const item of posts) {
+    if (item.data.translationKey === post.data.translationKey) {
+      alternates.set(item.data.lang, item);
+    }
+  }
+
+  return alternates;
+}
+
 export function getPostUrl(post: Post) {
-  return `/artigos/${getPostSlug(post)}`;
+  return postUrl(post.data.lang, getPostSlug(post));
+}
+
+export function getTagUrl(lang: Lang, tag: string) {
+  return tagsUrl(lang, slugify(tag));
+}
+
+export function getCategoryUrl(lang: Lang, category: string) {
+  return categoriesUrl(lang, slugify(category));
 }
 
 export function getPostCover(post: Post) {
-  return post.data.cover || DEFAULT_COVER;
+  const cover = post.data.cover;
+
+  if (!cover) return DEFAULT_COVER;
+  if (typeof cover === 'string') return cover;
+
+  return (cover as ImageMetadata).src;
 }
 
 export function getPostSlug(post: Post) {
-  return post.data.slug ?? post.id.replace(/\.(md|mdx)$/, '');
+  return post.data.slug ?? post.id.replace(/\/(pt|en)\.(md|mdx)$/, '').replace(/\.(md|mdx)$/, '');
 }
 
-export function formatDate(date: Date) {
-  return new Intl.DateTimeFormat('pt-BR', {
+export function formatDate(date: Date, lang: Lang = 'pt') {
+  return new Intl.DateTimeFormat(lang === 'pt' ? 'pt-BR' : 'en-US', {
     day: '2-digit',
     month: 'long',
-    year: 'numeric'
+    year: 'numeric',
+    timeZone: 'UTC'
   }).format(date);
 }
 

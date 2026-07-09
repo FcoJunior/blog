@@ -2,25 +2,40 @@
 import BaseLayout from './BaseLayout.astro';
 import Sidebar from '@components/Sidebar.astro';
 import type { Post } from '@utils/posts';
-import { formatDate, getPostCover, getPostSlug, slugify } from '@utils/posts';
+import { formatDate, getCategoryUrl, getPostAlternates, getPostCover, getPostUrl } from '@utils/posts';
+import { getSeoAlternates } from '@utils/seo';
+import { homeUrl, type Lang } from '@i18n/index';
 
 interface Props {
   post: Post;
 }
 
 const { post } = Astro.props;
-const slug = getPostSlug(post);
+const lang = post.data.lang;
 const tags = post.data.tags.join(', ');
+const translatedPosts = await getPostAlternates(post);
+const languageUrls: Partial<Record<Lang, string>> = {
+  pt: translatedPosts.get('pt') ? getPostUrl(translatedPosts.get('pt')!) : homeUrl('pt'),
+  en: translatedPosts.get('en') ? getPostUrl(translatedPosts.get('en')!) : homeUrl('en')
+};
+const seoUrls: Partial<Record<Lang, string>> = {};
+
+for (const [itemLang, itemPost] of translatedPosts) {
+  seoUrls[itemLang] = getPostUrl(itemPost);
+}
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
   image={getPostCover(post)}
-  canonical={`/artigos/${slug}`}
+  canonical={getPostUrl(post)}
   type="article"
   pubDate={post.data.pubDate}
   updatedDate={post.data.updatedDate}
+  lang={lang}
+  languageUrls={languageUrls}
+  alternates={getSeoAlternates(seoUrls)}
 >
   <div class="page-shell py-8 flex flex-col lg:flex-row gap-4">
     <div class="w-full lg:w-3/4">
@@ -33,6 +48,7 @@ const tags = post.data.tags.join(', ');
           <h1 class="text-grey-100 text-center" data-pagefind-meta="title">{post.data.title}</h1>
           <p class="sr-only" data-pagefind-meta="category">{post.data.category}</p>
           <p class="sr-only" data-pagefind-meta="tags">{tags}</p>
+          <p class="sr-only" data-pagefind-meta="lang">{lang}</p>
           <div class="flex flex-col-reverse md:flex-col">
             <div class="flex justify-start md:justify-center flex-wrap gap-3 py-3 not-prose font-mono text-lg items-center text-grey-200">
               <div class="flex gap-4 items-center">
@@ -42,13 +58,13 @@ const tags = post.data.tags.join(', ');
               <span class="text-primary-400">-</span>
               <span>{tags}</span>
               <span class="text-primary-400">-</span>
-              <a href={`/categorias/${slugify(post.data.category)}`} class="hover:text-primary-400">{post.data.category}</a>
+              <a href={getCategoryUrl(lang, post.data.category)} class="hover:text-primary-400">{post.data.category}</a>
               <span class="text-primary-400">-</span>
-              <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+              <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate, lang)}</time>
             </div>
             <div>
               <div class="flex justify-center not-prose">
-                <img class="rounded-2xl w-full max-h-[480px] object-cover" src={getPostCover(post)} alt={`Capa do artigo ${post.data.title}`} />
+                <img class="rounded-2xl w-full max-h-[480px] object-cover" src={getPostCover(post)} alt={post.data.title} />
               </div>
               <div>
                 <slot />
@@ -59,7 +75,7 @@ const tags = post.data.tags.join(', ');
       </div>
     </div>
     <aside class="lg:w-1/4 not-prose">
-      <Sidebar title={post.data.title} url={new URL(`/artigos/${slug}`, Astro.site ?? Astro.url).toString()} />
+      <Sidebar title={post.data.title} url={new URL(getPostUrl(post), Astro.site ?? Astro.url).toString()} lang={lang} />
     </aside>
   </div>
 </BaseLayout>

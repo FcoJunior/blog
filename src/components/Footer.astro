@@ -1,16 +1,25 @@
 ---
 import NewsletterForm from './NewsletterForm.astro';
+import type { Lang } from '@i18n/index';
+import { getTranslations } from '@i18n/index';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'pt' } = Astro.props;
+const t = getTranslations(lang);
 ---
 
 <aside class="page-shell py-8 bg-grey-700 flex flex-col md:flex-row items-end gap-8">
   <div class="flex-1">
-    <h3 class="text-2xl font-semibold pb-6">Conteúdo de dev pra dev</h3>
+    <h3 class="text-2xl font-semibold pb-6">{t.newsletter.title}</h3>
     <p class="text-grey-300">
-      Se curtir trocar ideia sobre desenvolvimento, arquitetura e o dia a dia real de quem codifica, entra pra newsletter do Dev Junior. Bora juntos.
+      {t.newsletter.description}
     </p>
   </div>
   <div class="flex-1 w-full">
-    <NewsletterForm />
+    <NewsletterForm lang={lang} />
   </div>
 </aside>
 <footer class="page-shell flex justify-between items-center py-8 bg-grey-900 text-grey-200">
