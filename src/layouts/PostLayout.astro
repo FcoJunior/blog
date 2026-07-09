@@ -10,6 +10,7 @@ interface Props {
 
 const { post } = Astro.props;
 const slug = getPostSlug(post);
+const tags = post.data.tags.join(', ');
 ---
 
 <BaseLayout
@@ -24,8 +25,14 @@ const slug = getPostSlug(post);
   <div class="page-shell py-8 flex flex-col lg:flex-row gap-4">
     <div class="w-full lg:w-3/4">
       <div class="prose lg:prose-xl max-w-none text-grey-100 grow">
-        <article class="flex flex-col justify-center">
-          <h1 class="text-grey-100 text-center">{post.data.title}</h1>
+        <article
+          class="flex flex-col justify-center"
+          data-pagefind-body
+          data-pagefind-meta={`description:${post.data.description}`}
+        >
+          <h1 class="text-grey-100 text-center" data-pagefind-meta="title">{post.data.title}</h1>
+          <p class="sr-only" data-pagefind-meta="category">{post.data.category}</p>
+          <p class="sr-only" data-pagefind-meta="tags">{tags}</p>
           <div class="flex flex-col-reverse md:flex-col">
             <div class="flex justify-start md:justify-center flex-wrap gap-3 py-3 not-prose font-mono text-lg items-center text-grey-200">
               <div class="flex gap-4 items-center">
@@ -33,7 +40,7 @@ const slug = getPostSlug(post);
                 <span>Dev Junior</span>
               </div>
               <span class="text-primary-400">-</span>
-              <span>{post.data.tags.join(', ')}</span>
+              <span>{tags}</span>
               <span class="text-primary-400">-</span>
               <a href={`/categorias/${slugify(post.data.category)}`} class="hover:text-primary-400">{post.data.category}</a>
               <span class="text-primary-400">-</span>

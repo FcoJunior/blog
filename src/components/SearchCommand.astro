@@ -1,0 +1,282 @@
+<button
+  type="button"
+  data-search-trigger
+  class="group flex w-32 items-center justify-between gap-2 rounded-2xl border border-grey-600 bg-grey-700 px-3 py-2 text-left text-grey-300 shadow-lg transition hover:border-primary-500 hover:text-grey-50 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-auto sm:min-w-40 sm:gap-4 sm:px-4"
+  aria-haspopup="dialog"
+>
+  <span>Buscar...</span>
+  <kbd
+    data-search-shortcut
+    class="rounded-lg border border-grey-600 bg-grey-900 px-2 py-0.5 font-mono text-xs text-grey-200 group-hover:text-grey-50"
+  >
+    Ctrl K
+  </kbd>
+</button>
+
+<div data-search-modal class="fixed inset-0 z-50 hidden" aria-hidden="true">
+  <button
+    type="button"
+    data-search-backdrop
+    class="absolute inset-0 w-full bg-grey-900/80 backdrop-blur-sm"
+    aria-label="Fechar busca"
+  >
+  </button>
+
+  <div class="relative mx-auto flex min-h-full w-full max-w-3xl items-start px-4 py-20 sm:px-6 lg:py-28">
+    <section
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="search-command-title"
+      class="w-full overflow-hidden rounded-2xl border border-grey-600 bg-grey-900 shadow-2xl ring-1 ring-grey-700"
+    >
+      <h2 id="search-command-title" class="sr-only">Buscar artigos</h2>
+      <div class="flex items-center gap-3 border-b border-grey-600 px-4 py-3">
+        <svg class="h-5 w-5 shrink-0 text-grey-300" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"></path>
+        </svg>
+        <label for="search-command-input" class="sr-only">Digite sua busca</label>
+        <input
+          id="search-command-input"
+          data-search-input
+          type="search"
+          autocomplete="off"
+          placeholder="Buscar por titulo, conteudo, tag ou categoria"
+          class="min-w-0 flex-1 bg-transparent py-2 text-lg text-grey-50 placeholder:text-grey-300 focus:outline-none"
+        />
+        <kbd class="hidden rounded-lg border border-grey-600 px-2 py-1 font-mono text-xs text-grey-300 sm:block">Esc</kbd>
+      </div>
+
+      <div class="max-h-[60vh] overflow-y-auto p-2">
+        <p data-search-status class="px-3 py-8 text-center text-grey-300">
+          Digite para buscar nos artigos.
+        </p>
+        <div data-search-results role="listbox" aria-label="Resultados da busca" class="hidden flex-col gap-1"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  // @ts-nocheck
+  const trigger = document.querySelector('[data-search-trigger]');
+  const modal = document.querySelector('[data-search-modal]');
+  const backdrop = document.querySelector('[data-search-backdrop]');
+  const input = document.querySelector('[data-search-input]');
+  const status = document.querySelector('[data-search-status]');
+  const results = document.querySelector('[data-search-results]');
+  const shortcut = document.querySelector('[data-search-shortcut]');
+
+  const isMac = /Mac|iPhone|iPad|iPod/.test(window.navigator.platform);
+  const maxResults = 8;
+  let pagefind;
+  let searchTimer;
+  let activeIndex = -1;
+  let lastFocusedElement = null;
+  let lastQueryId = 0;
+
+  if (shortcut) {
+    shortcut.textContent = isMac ? '⌘ K' : 'Ctrl K';
+  }
+
+  const escapeHtml = (value) =>
+    String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+
+  const getMetaValue = (meta, key) => {
+    const value = meta?.[key];
+    return Array.isArray(value) ? value.join(', ') : value || '';
+  };
+
+  const setStatus = (message) => {
+    if (!status || !results) return;
+    status.textContent = message;
+    status.classList.remove('hidden');
+    results.classList.add('hidden');
+    results.replaceChildren();
+  };
+
+  const updateActiveResult = (nextIndex) => {
+    if (!results) return;
+    const items = Array.from(results.querySelectorAll('[data-search-result]'));
+    if (!items.length) {
+      activeIndex = -1;
+      return;
+    }
+
+    activeIndex = (nextIndex + items.length) % items.length;
+    items.forEach((item, index) => {
+      const isActive = index === activeIndex;
+      item.setAttribute('aria-selected', String(isActive));
+      item.classList.toggle('border-primary-500', isActive);
+      item.classList.toggle('bg-grey-700', isActive);
+      item.classList.toggle('bg-grey-900', !isActive);
+    });
+    items[activeIndex].scrollIntoView({ block: 'nearest' });
+  };
+
+  const renderResults = (items) => {
+    if (!status || !results) return;
+
+    status.classList.add('hidden');
+    results.classList.remove('hidden');
+    results.replaceChildren();
+
+    const fragment = document.createDocumentFragment();
+
+    items.forEach((item, index) => {
+      const title = getMetaValue(item.meta, 'title') || item.url;
+      const description = getMetaValue(item.meta, 'description') || item.plain_excerpt || '';
+      const category = getMetaValue(item.meta, 'category');
+      const tags = getMetaValue(item.meta, 'tags');
+      const label = [category, tags].filter(Boolean).join(' / ');
+
+      const link = document.createElement('a');
+      link.href = item.url;
+      link.setAttribute('role', 'option');
+      link.setAttribute('aria-selected', 'false');
+      link.dataset.searchResult = String(index);
+      link.className = 'block rounded-xl border border-transparent bg-grey-900 px-4 py-3 text-grey-100 transition hover:border-primary-500 hover:bg-grey-700 focus:outline-none focus:ring-2 focus:ring-primary-500';
+      link.innerHTML = `
+        <span class="block font-bold">${escapeHtml(title)}</span>
+        <span class="mt-1 line-clamp-2 block text-sm text-grey-300">${escapeHtml(description)}</span>
+        ${
+          label
+            ? `<span class="mt-2 block font-mono text-xs text-primary-400">${escapeHtml(label)}</span>`
+            : ''
+        }
+      `;
+      link.addEventListener('mouseenter', () => updateActiveResult(index));
+      fragment.append(link);
+    });
+
+    results.append(fragment);
+    updateActiveResult(0);
+  };
+
+  const loadPagefind = async () => {
+    if (pagefind) return pagefind;
+    pagefind = await import(/* @vite-ignore */ '/pagefind/pagefind.js');
+    await pagefind.init();
+    return pagefind;
+  };
+
+  const runSearch = async () => {
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const query = input.value.trim();
+    const queryId = ++lastQueryId;
+
+    if (!query) {
+      setStatus('Digite para buscar nos artigos.');
+      return;
+    }
+
+    setStatus('Buscando...');
+
+    try {
+      const search = await (await loadPagefind()).debouncedSearch(query, {}, 150);
+      if (queryId !== lastQueryId || search === null) return;
+
+      const items = await Promise.all(search.results.slice(0, maxResults).map((result) => result.data()));
+      if (queryId !== lastQueryId) return;
+
+      if (!items.length) {
+        setStatus('Nenhum resultado encontrado.');
+        return;
+      }
+
+      renderResults(items);
+    } catch {
+      setStatus('Busca indisponivel neste modo. Gere o indice Pagefind com npm run build.');
+    }
+  };
+
+  const openSearch = async () => {
+    if (!modal || !(input instanceof HTMLInputElement)) return;
+
+    lastFocusedElement = document.activeElement;
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('overflow-hidden');
+    input.focus();
+    input.select();
+
+    try {
+      await loadPagefind();
+    } catch {
+      if (input.value.trim()) {
+        setStatus('Busca indisponivel neste modo. Gere o indice Pagefind com npm run build.');
+      }
+    }
+  };
+
+  const closeSearch = () => {
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('overflow-hidden');
+
+    if (lastFocusedElement instanceof HTMLElement) {
+      lastFocusedElement.focus();
+    }
+  };
+
+  const focusResult = () => {
+    if (!results || activeIndex < 0) return;
+    const items = Array.from(results.querySelectorAll('[data-search-result]'));
+    const item = items[activeIndex];
+    if (item instanceof HTMLAnchorElement) item.focus();
+  };
+
+  trigger?.addEventListener('click', openSearch);
+  backdrop?.addEventListener('click', closeSearch);
+
+  input?.addEventListener('input', () => {
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(runSearch, 120);
+  });
+
+  input?.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      updateActiveResult(activeIndex + 1);
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      updateActiveResult(activeIndex - 1);
+    }
+
+    if (event.key === 'Enter' && results && activeIndex >= 0) {
+      const items = Array.from(results.querySelectorAll('[data-search-result]'));
+      const item = items[activeIndex];
+      if (item instanceof HTMLAnchorElement) {
+        window.location.href = item.href;
+      }
+    }
+
+    if (event.key === 'Tab' && results && activeIndex >= 0 && !event.shiftKey) {
+      focusResult();
+    }
+  });
+
+  modal?.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSearch();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const isShortcut = event.key.toLowerCase() === 'k' && (isMac ? event.metaKey : event.ctrlKey);
+    if (!isShortcut) return;
+
+    event.preventDefault();
+    openSearch();
+  });
+</script>
