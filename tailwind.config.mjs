@@ -46,6 +46,11 @@ export default {
               padding: '4px',
               borderRadius: '6px'
             },
+            'pre code': {
+              backgroundColor: 'transparent',
+              padding: '0',
+              borderRadius: '0'
+            },
             'code::before': { content: '""' },
             'code::after': { content: '""' },
             blockquote: {
@@ -78,6 +83,11 @@ export default {
             '--tw-prose-hr': theme('colors.grey.600'),
             code: {
               backgroundColor: theme('colors.grey.700')
+            },
+            'pre code': {
+              backgroundColor: 'transparent',
+              padding: '0',
+              borderRadius: '0'
             },
             blockquote: {
               backgroundColor: theme('colors.grey.600'),
