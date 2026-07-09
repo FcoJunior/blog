@@ -39,18 +39,18 @@ for (const [itemLang, itemPost] of translatedPosts) {
 >
   <div class="page-shell py-8 flex flex-col lg:flex-row gap-4">
     <div class="w-full lg:w-3/4">
-      <div class="prose lg:prose-xl max-w-none text-grey-100 grow">
+      <div class="prose max-w-none grow text-grey-500 dark:prose-invert dark:text-grey-100 lg:prose-xl">
         <article
           class="flex flex-col justify-center"
           data-pagefind-body
           data-pagefind-meta={`description:${post.data.description}`}
         >
-          <h1 class="text-grey-100 text-center" data-pagefind-meta="title">{post.data.title}</h1>
+          <h1 class="text-center text-grey-800 dark:text-grey-100" data-pagefind-meta="title">{post.data.title}</h1>
           <p class="sr-only" data-pagefind-meta="category">{post.data.category}</p>
           <p class="sr-only" data-pagefind-meta="tags">{tags}</p>
           <p class="sr-only" data-pagefind-meta="lang">{lang}</p>
           <div class="flex flex-col-reverse md:flex-col">
-            <div class="flex justify-start md:justify-center flex-wrap gap-3 py-3 not-prose font-mono text-lg items-center text-grey-200">
+            <div class="not-prose flex flex-wrap items-center justify-start gap-3 py-3 font-mono text-lg text-grey-500 dark:text-grey-200 md:justify-center">
               <div class="flex gap-4 items-center">
                 <img class="avatar avatar-48 photo rounded-full h-12 w-12" src="/images/logo-menu.png" alt="Dev Junior" />
                 <span>Dev Junior</span>

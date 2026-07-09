@@ -8,7 +8,7 @@
   }
 
   body {
-    @apply bg-grey-900 font-sans text-grey-50 antialiased;
+    @apply bg-grey-75 font-sans text-grey-800 antialiased dark:bg-grey-900 dark:text-grey-50;
   }
 
   ::selection {

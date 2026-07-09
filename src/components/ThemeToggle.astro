@@ -1,0 +1,79 @@
+---
+import type { Lang } from '@i18n/index';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'pt' } = Astro.props;
+const labels = {
+  pt: {
+    light: 'Ativar tema claro',
+    dark: 'Ativar tema escuro'
+  },
+  en: {
+    light: 'Switch to light theme',
+    dark: 'Switch to dark theme'
+  }
+};
+const label = labels[lang];
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  data-light-label={label.light}
+  data-dark-label={label.dark}
+  class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-grey-150 bg-grey-25 text-grey-500 shadow-lg transition hover:border-primary-500 hover:text-grey-800 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-grey-600 dark:bg-grey-700 dark:text-grey-200 dark:hover:text-grey-50"
+  aria-label={label.dark}
+  aria-pressed="false"
+>
+  <svg class="h-5 w-5 dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"></path>
+  </svg>
+  <svg class="hidden h-5 w-5 dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"></path>
+  </svg>
+</button>
+
+<script is:inline>
+  (() => {
+    const button = document.querySelector('[data-theme-toggle]');
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const getStoredTheme = () => {
+      try {
+        const theme = localStorage.getItem('theme');
+        return theme === 'light' || theme === 'dark' ? theme : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const getSystemTheme = () => window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light';
+    const getCurrentTheme = () => getStoredTheme() ?? getSystemTheme();
+
+    const applyTheme = (theme) => {
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+      document.documentElement.dataset.theme = theme;
+      button.setAttribute('aria-pressed', String(theme === 'dark'));
+      button.setAttribute('aria-label', theme === 'dark' ? button.dataset.lightLabel ?? '' : button.dataset.darkLabel ?? '');
+    };
+
+    applyTheme(getCurrentTheme());
+
+    button.addEventListener('click', () => {
+      const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+      try {
+        localStorage.setItem('theme', nextTheme);
+      } catch {
+        // Ignore storage failures; the visible theme can still change.
+      }
+      applyTheme(nextTheme);
+    });
+
+    window.matchMedia?.('(prefers-color-scheme: dark)')?.addEventListener('change', () => {
+      if (!getStoredTheme()) applyTheme(getSystemTheme());
+    });
+  })();
+</script>

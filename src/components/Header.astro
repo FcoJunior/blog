@@ -1,8 +1,9 @@
 ---
 import SearchCommand from './SearchCommand.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import ThemeToggle from './ThemeToggle.astro';
 import type { Lang } from '@i18n/index';
-import { getTranslations, homeUrl } from '@i18n/index';
+import { homeUrl } from '@i18n/index';
 
 interface Props {
   lang?: Lang;
@@ -10,10 +11,9 @@ interface Props {
 }
 
 const { lang = 'pt', languageUrls = {} } = Astro.props;
-const t = getTranslations(lang);
 ---
 
-<div class="page-shell fixed w-full bg-grey-900 shadow-lg z-20">
+<div class="page-shell fixed z-20 w-full bg-grey-75 shadow-lg transition-colors dark:bg-grey-900">
   <nav class="flex gap-3 justify-between pt-8 pb-4 sm:gap-6">
     <div>
       <a href={homeUrl(lang)} aria-label="Dev Junior">
@@ -22,6 +22,7 @@ const t = getTranslations(lang);
     </div>
     <div class="flex items-center gap-3">
       <LanguageSwitcher lang={lang} urls={languageUrls} />
+      <ThemeToggle lang={lang} />
       <SearchCommand lang={lang} />
     </div>
   </nav>

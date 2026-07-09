@@ -14,10 +14,10 @@ const t = getTranslations(lang);
 const shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
 ---
 
-<div class="h-full lg:border-l lg:border-grey-600 lg:px-4 flex flex-col gap-8">
+<div class="flex h-full flex-col gap-8 lg:border-l lg:border-grey-150 lg:px-4 lg:dark:border-grey-600">
   <div class="flex-col gap-3 hidden lg:flex">
     <h2 class="font-bold text-lg">{t.newsletter.title}</h2>
-    <p class="text-grey-300 pb-2">
+    <p class="pb-2 text-grey-500 dark:text-grey-300">
       {t.newsletter.sidebarDescription}
     </p>
     <NewsletterForm compact lang={lang} />

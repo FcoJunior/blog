@@ -13,13 +13,13 @@ const t = getTranslations(lang);
 <button
   type="button"
   data-search-trigger
-  class="group flex w-32 items-center justify-between gap-2 rounded-2xl border border-grey-600 bg-grey-700 px-3 py-2 text-left text-grey-300 shadow-lg transition hover:border-primary-500 hover:text-grey-50 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-auto sm:min-w-40 sm:gap-4 sm:px-4"
+  class="group flex w-32 items-center justify-between gap-2 rounded-2xl border border-grey-150 bg-grey-25 px-3 py-2 text-left text-grey-500 shadow-lg transition hover:border-primary-500 hover:text-grey-800 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-grey-600 dark:bg-grey-700 dark:text-grey-300 dark:hover:text-grey-50 sm:w-auto sm:min-w-40 sm:gap-4 sm:px-4"
   aria-haspopup="dialog"
 >
   <span>{t.search.trigger}</span>
   <kbd
     data-search-shortcut
-    class="rounded-lg border border-grey-600 bg-grey-900 px-2 py-0.5 font-mono text-xs text-grey-200 group-hover:text-grey-50"
+    class="rounded-lg border border-grey-150 bg-grey-75 px-2 py-0.5 font-mono text-xs text-grey-500 group-hover:text-grey-800 dark:border-grey-600 dark:bg-grey-900 dark:text-grey-200 dark:group-hover:text-grey-50"
   >
     Ctrl K
   </kbd>
@@ -29,7 +29,7 @@ const t = getTranslations(lang);
   <button
     type="button"
     data-search-backdrop
-    class="absolute inset-0 w-full bg-grey-900/80 backdrop-blur-sm"
+    class="absolute inset-0 w-full bg-grey-900/50 backdrop-blur-sm dark:bg-grey-900/80"
     aria-label={t.search.close}
   >
   </button>
@@ -39,11 +39,11 @@ const t = getTranslations(lang);
       role="dialog"
       aria-modal="true"
       aria-labelledby="search-command-title"
-      class="w-full overflow-hidden rounded-2xl border border-grey-600 bg-grey-900 shadow-2xl ring-1 ring-grey-700"
+      class="w-full overflow-hidden rounded-2xl border border-grey-150 bg-grey-25 shadow-2xl ring-1 ring-grey-150 dark:border-grey-600 dark:bg-grey-900 dark:ring-grey-700"
     >
       <h2 id="search-command-title" class="sr-only">{t.search.title}</h2>
-      <div class="flex items-center gap-3 border-b border-grey-600 px-4 py-3">
-        <svg class="h-5 w-5 shrink-0 text-grey-300" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <div class="flex items-center gap-3 border-b border-grey-150 px-4 py-3 dark:border-grey-600">
+        <svg class="h-5 w-5 shrink-0 text-grey-500 dark:text-grey-300" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"></path>
         </svg>
         <label for="search-command-input" class="sr-only">{t.search.inputLabel}</label>
@@ -53,13 +53,13 @@ const t = getTranslations(lang);
           type="search"
           autocomplete="off"
           placeholder={t.search.placeholder}
-          class="min-w-0 flex-1 bg-transparent py-2 text-lg text-grey-50 placeholder:text-grey-300 focus:outline-none"
+          class="min-w-0 flex-1 bg-transparent py-2 text-lg text-grey-800 placeholder:text-grey-300 focus:outline-none dark:text-grey-50"
         />
-        <kbd class="hidden rounded-lg border border-grey-600 px-2 py-1 font-mono text-xs text-grey-300 sm:block">Esc</kbd>
+        <kbd class="hidden rounded-lg border border-grey-150 px-2 py-1 font-mono text-xs text-grey-500 dark:border-grey-600 dark:text-grey-300 sm:block">Esc</kbd>
       </div>
 
       <div class="max-h-[60vh] overflow-y-auto p-2">
-        <p data-search-status class="px-3 py-8 text-center text-grey-300">
+        <p data-search-status class="px-3 py-8 text-center text-grey-500 dark:text-grey-300">
           {t.search.idle}
         </p>
         <div data-search-results role="listbox" aria-label={t.search.resultsLabel} class="hidden flex-col gap-1"></div>
@@ -125,8 +125,10 @@ const t = getTranslations(lang);
       const isActive = index === activeIndex;
       item.setAttribute('aria-selected', String(isActive));
       item.classList.toggle('border-primary-500', isActive);
-      item.classList.toggle('bg-grey-700', isActive);
-      item.classList.toggle('bg-grey-900', !isActive);
+      item.classList.toggle('bg-grey-75', isActive);
+      item.classList.toggle('dark:bg-grey-700', isActive);
+      item.classList.toggle('bg-grey-25', !isActive);
+      item.classList.toggle('dark:bg-grey-900', !isActive);
     });
     items[activeIndex].scrollIntoView({ block: 'nearest' });
   };
@@ -152,10 +154,10 @@ const t = getTranslations(lang);
       link.setAttribute('role', 'option');
       link.setAttribute('aria-selected', 'false');
       link.dataset.searchResult = String(index);
-      link.className = 'block rounded-xl border border-transparent bg-grey-900 px-4 py-3 text-grey-100 transition hover:border-primary-500 hover:bg-grey-700 focus:outline-none focus:ring-2 focus:ring-primary-500';
+      link.className = 'block rounded-xl border border-transparent bg-grey-25 px-4 py-3 text-grey-800 transition hover:border-primary-500 hover:bg-grey-75 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-grey-900 dark:text-grey-100 dark:hover:bg-grey-700';
       link.innerHTML = `
         <span class="block font-bold">${escapeHtml(title)}</span>
-        <span class="mt-1 line-clamp-2 block text-sm text-grey-300">${escapeHtml(description)}</span>
+        <span class="mt-1 line-clamp-2 block text-sm text-grey-500 dark:text-grey-300">${escapeHtml(description)}</span>
         ${
           label
             ? `<span class="mt-2 block font-mono text-xs text-primary-400">${escapeHtml(label)}</span>`

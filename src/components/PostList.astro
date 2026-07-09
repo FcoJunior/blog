@@ -19,6 +19,6 @@ const t = getTranslations(lang);
       {posts.map((post) => <PostCard post={post} lang={lang} />)}
     </aside>
   ) : (
-    <p class="text-grey-300">{t.posts.empty}</p>
+    <p class="text-grey-500 dark:text-grey-300">{t.posts.empty}</p>
   )
 }

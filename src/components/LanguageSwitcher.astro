@@ -11,14 +11,14 @@ const { lang, urls = {} } = Astro.props;
 
 ---
 
-<div class="flex items-center gap-1 rounded-2xl border border-grey-600 bg-grey-700 p-1 text-sm font-semibold text-grey-200">
+<div class="flex items-center gap-1 rounded-2xl border border-grey-150 bg-grey-25 p-1 text-sm font-semibold text-grey-500 transition-colors dark:border-grey-600 dark:bg-grey-700 dark:text-grey-200">
   {languages.map((item) => (
     <a
       href={urls[item] ?? homeUrl(item)}
       aria-current={item === lang ? 'true' : undefined}
       class:list={[
-        'flex items-center gap-1.5 rounded-xl px-2 py-1 transition hover:text-grey-50',
-        item === lang ? 'bg-primary-600 text-grey-50' : 'text-grey-300'
+        'flex items-center gap-1.5 rounded-xl px-2 py-1 transition hover:text-grey-800 dark:hover:text-grey-50',
+        item === lang ? 'bg-primary-600 text-grey-50' : 'text-grey-500 dark:text-grey-300'
       ]}
     >
       {item === 'pt' ? (
