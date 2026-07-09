@@ -78,6 +78,10 @@ const t = getTranslations(lang);
   const results = document.querySelector('[data-search-results]');
   const shortcut = document.querySelector('[data-search-shortcut]');
 
+  if (modal && modal.parentElement !== document.body) {
+    document.body.append(modal);
+  }
+
   const isMac = /Mac|iPhone|iPad|iPod/.test(window.navigator.platform);
   const maxResults = 8;
   const fetchLimit = 24;
@@ -240,6 +244,7 @@ const t = getTranslations(lang);
     modal.classList.add('hidden');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('overflow-hidden');
+    activeIndex = -1;
 
     if (lastFocusedElement instanceof HTMLElement) {
       lastFocusedElement.focus();
@@ -293,6 +298,12 @@ const t = getTranslations(lang);
   });
 
   document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+      event.preventDefault();
+      closeSearch();
+      return;
+    }
+
     const isShortcut = event.key.toLowerCase() === 'k' && (isMac ? event.metaKey : event.ctrlKey);
     if (!isShortcut) return;
 
