@@ -13,11 +13,11 @@ interface Props {
 const { lang = 'pt', languageUrls = {} } = Astro.props;
 ---
 
-<div class="page-shell fixed z-20 w-full bg-grey-75 shadow-lg transition-colors dark:bg-grey-900">
-  <nav class="flex gap-3 justify-between pt-8 pb-4 sm:gap-6">
+<div class="page-shell fixed z-20 w-full border-b border-grey-150 bg-grey-75/95 backdrop-blur transition-colors dark:border-grey-600 dark:bg-grey-900/95">
+  <nav class="flex items-center justify-between gap-3 py-3 sm:gap-6">
     <div>
       <a href={homeUrl(lang)} aria-label="Dev Junior">
-        <img class="w-12 lg:w-16" src="/images/logo-menu.png" alt="Dev Junior" />
+        <img class="w-10 lg:w-12" src="/images/logo-menu.png" alt="Dev Junior" />
       </a>
     </div>
     <div class="flex items-center gap-3">
