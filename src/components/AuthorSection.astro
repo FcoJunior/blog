@@ -1,0 +1,30 @@
+---
+import { getTranslations, type Lang } from '@i18n/index';
+import SocialLinks from './SocialLinks.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+---
+
+<section id={t.home.authorId} class="page-shell scroll-mt-28 py-16">
+  <div class="grid gap-8 rounded-2xl border border-grey-150 bg-grey-25 p-6 dark:border-grey-600 dark:bg-grey-900 sm:p-8 lg:grid-cols-[0.35fr_0.65fr] lg:p-10">
+    <div class="flex items-center justify-center lg:justify-start">
+      <div class="flex aspect-square w-44 items-center justify-center rounded-2xl border border-grey-150 bg-grey-50 text-4xl font-bold text-grey-400 dark:border-grey-600 dark:bg-grey-800 dark:text-grey-300">
+        FJ
+      </div>
+    </div>
+    <div>
+      <h2 class="text-3xl font-bold text-grey-800 dark:text-grey-50">{t.home.authorTitle}</h2>
+      <p class="mt-4 text-lg font-semibold text-grey-700 dark:text-grey-100">{t.home.authorIntro}</p>
+      <p class="mt-4 max-w-3xl leading-8 text-grey-500 dark:text-grey-300">{t.home.authorDescription}</p>
+      <div class="mt-6">
+        <p class="mb-3 text-sm font-semibold text-grey-500 dark:text-grey-300">{t.home.socialLabel}</p>
+        <SocialLinks compact />
+      </div>
+    </div>
+  </div>
+</section>

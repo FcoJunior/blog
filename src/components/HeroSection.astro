@@ -1,0 +1,65 @@
+---
+import { articlesUrl, getTranslations, type Lang } from '@i18n/index';
+import HeroIcon from './HeroIcon.astro';
+import SocialLinks from './SocialLinks.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+---
+
+<section class="page-shell py-16 sm:py-20 lg:py-24">
+  <div class="max-w-5xl">
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-grey-150 bg-grey-25 px-3 py-1 text-sm font-medium text-grey-500 dark:border-grey-600 dark:bg-grey-800 dark:text-grey-300">
+      <HeroIcon name="BookOpenIcon" class="h-4 w-4 text-primary-500" />
+      <span>Dev Junior</span>
+    </div>
+    <h1 class="max-w-4xl text-4xl font-bold leading-tight text-grey-800 dark:text-grey-50 sm:text-5xl lg:text-6xl">
+      <span class="block">{t.hero.titlePrefix}</span>
+      <span class="mt-2 block min-h-[1.15em] text-primary-500">
+        <span data-typed-topic data-topics={JSON.stringify(t.hero.topics)}></span>
+      </span>
+    </h1>
+    <p class="mt-6 max-w-3xl text-lg leading-8 text-grey-500 dark:text-grey-300">
+      {t.hero.description}
+    </p>
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+      <a
+        href={articlesUrl(lang)}
+        class="inline-flex items-center justify-center gap-2 rounded-lg bg-grey-800 px-5 py-3 font-semibold text-grey-50 transition hover:-translate-y-0.5 hover:bg-grey-700 dark:bg-grey-50 dark:text-grey-900 dark:hover:bg-grey-100"
+      >
+        {t.home.readArticles}
+        <HeroIcon name="ArrowRightIcon" class="h-4 w-4" />
+      </a>
+      <a
+        href={`#${t.home.authorId}`}
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-grey-150 bg-grey-25 px-5 py-3 font-semibold text-grey-700 transition hover:-translate-y-0.5 hover:border-grey-300 hover:bg-grey-50 dark:border-grey-600 dark:bg-grey-900 dark:text-grey-100 dark:hover:border-grey-500 dark:hover:bg-grey-800"
+      >
+        <HeroIcon name="UserCircleIcon" class="h-5 w-5" />
+        {t.home.aboutMe}
+      </a>
+    </div>
+    <div class="mt-6">
+      <SocialLinks />
+    </div>
+  </div>
+</section>
+
+<script>
+  import Typed from 'typed.js';
+
+  document.querySelectorAll<HTMLElement>('[data-typed-topic]').forEach((typedTopic) => {
+    const topics = typedTopic.dataset.topics ? JSON.parse(typedTopic.dataset.topics) : [];
+
+    new Typed(typedTopic, {
+      strings: topics,
+      typeSpeed: 70,
+      backDelay: 1500,
+      backSpeed: 35,
+      loop: true
+    });
+  });
+</script>

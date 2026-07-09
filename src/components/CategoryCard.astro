@@ -1,0 +1,19 @@
+---
+import HeroIcon from './HeroIcon.astro';
+
+interface Props {
+  name: string;
+  count: string;
+  icon: string;
+}
+
+const { name, count, icon } = Astro.props;
+---
+
+<article class="rounded-xl border border-grey-150 bg-grey-25 p-5 transition hover:-translate-y-1 hover:border-grey-300 hover:shadow-sm dark:border-grey-600 dark:bg-grey-900 dark:hover:border-grey-500">
+  <div class="mb-5 flex h-10 w-10 items-center justify-center rounded-lg border border-grey-150 bg-grey-50 text-primary-500 dark:border-grey-600 dark:bg-grey-800">
+    <HeroIcon name={icon} class="h-5 w-5" />
+  </div>
+  <h3 class="font-semibold text-grey-800 dark:text-grey-50">{name}</h3>
+  <p class="mt-1 text-sm text-grey-500 dark:text-grey-300">{count}</p>
+</article>

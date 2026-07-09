@@ -1,7 +1,6 @@
 ---
-import NewsletterForm from './NewsletterForm.astro';
-import type { Lang } from '@i18n/index';
-import { getTranslations } from '@i18n/index';
+import { articlesUrl, getTranslations, homeUrl, type Lang } from '@i18n/index';
+import BrandIcon from './BrandIcon.astro';
 
 interface Props {
   lang?: Lang;
@@ -9,33 +8,55 @@ interface Props {
 
 const { lang = 'pt' } = Astro.props;
 const t = getTranslations(lang);
+const categoryAnchor = `${homeUrl(lang)}#${t.home.categoriesId}`;
+const aboutAnchor = `${homeUrl(lang)}#${t.home.authorId}`;
+
+const socialLinks = [
+  { label: 'GitHub', href: 'https://github.com/fcojunior' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/fcojunr/' },
+  { label: 'Instagram', href: 'https://www.instagram.com/devjunr' }
+] as const;
 ---
 
-<aside class="page-shell flex flex-col items-end gap-8 bg-grey-75 py-8 transition-colors dark:bg-grey-700 md:flex-row">
-  <div class="flex-1">
-    <h3 class="text-2xl font-semibold pb-6">{t.newsletter.title}</h3>
-    <p class="text-grey-500 dark:text-grey-300">
-      {t.newsletter.description}
-    </p>
+<footer class="page-shell border-t border-grey-150 bg-grey-75 py-12 text-grey-500 transition-colors dark:border-grey-600 dark:bg-grey-900 dark:text-grey-300">
+  <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <h2 class="text-lg font-bold text-grey-800 dark:text-grey-50">Dev Junior</h2>
+      <p class="mt-3 max-w-xs leading-7">
+        {t.site.description}
+      </p>
+    </div>
+    <nav aria-label={t.nav.articles}>
+      <h3 class="font-semibold text-grey-800 dark:text-grey-50">{t.nav.articles}</h3>
+      <ul class="mt-4 space-y-3">
+        <li><a href={articlesUrl(lang)} class="hover:text-primary-500">{t.nav.articles}</a></li>
+        <li><a href={categoryAnchor} class="hover:text-primary-500">{t.home.categoriesTitle}</a></li>
+        <li><a href={aboutAnchor} class="hover:text-primary-500">{t.home.aboutMe}</a></li>
+      </ul>
+    </nav>
+    <nav aria-label={t.home.categoriesTitle}>
+      <h3 class="font-semibold text-grey-800 dark:text-grey-50">{t.home.categoriesTitle}</h3>
+      <ul class="mt-4 space-y-3">
+        {t.home.categories.slice(0, 4).map((category) => (
+          <li><a href={categoryAnchor} class="hover:text-primary-500">{category.name}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <nav aria-label={t.home.socialLabel}>
+      <h3 class="font-semibold text-grey-800 dark:text-grey-50">{t.home.socialLabel}</h3>
+      <ul class="mt-4 space-y-3">
+        {socialLinks.map((link) => (
+          <li>
+            <a href={link.href} target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 hover:text-primary-500">
+              <BrandIcon name={link.label} class="h-4 w-4" />
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   </div>
-  <div class="flex-1 w-full">
-    <NewsletterForm lang={lang} />
-  </div>
-</aside>
-<footer class="page-shell flex items-center justify-between bg-grey-75 py-8 text-grey-500 transition-colors dark:bg-grey-900 dark:text-grey-200">
-  <div>
+  <div class="mt-10 border-t border-grey-150 pt-6 text-sm dark:border-grey-600">
     <span>&copy; Dev Junior {new Date().getFullYear()}</span>
   </div>
-  <ul class="flex gap-4">
-    <li>
-      <a href="https://www.instagram.com/devjunr" target="_blank" rel="noreferrer" class="fill-grey-300 hover:fill-grey-100" aria-label="Instagram">
-        <img src="/images/instagram.png" alt="" class="h-8 w-8" />
-      </a>
-    </li>
-    <li>
-      <a href="https://www.linkedin.com/in/fcojunr/" target="_blank" rel="noreferrer" class="fill-grey-300 hover:fill-grey-100" aria-label="LinkedIn">
-        <img src="/images/linkedin.png" alt="" class="h-8 w-8" />
-      </a>
-    </li>
-  </ul>
 </footer>

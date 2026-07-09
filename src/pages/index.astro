@@ -1,15 +1,19 @@
 ---
-import NewsletterForm from '@components/NewsletterForm.astro';
-import PostList from '@components/PostList.astro';
+import AuthorSection from '@components/AuthorSection.astro';
+import CategoryCard from '@components/CategoryCard.astro';
+import FeaturedPost from '@components/FeaturedPost.astro';
+import HeroSection from '@components/HeroSection.astro';
+import PostGrid from '@components/PostGrid.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { articlesUrl, getTranslations, homeUrl } from '@i18n/index';
-import { getPublishedPostsByLang } from '@utils/posts';
+import { getTranslations, homeUrl } from '@i18n/index';
+import { getFeaturedPost, getPublishedPostsByLang } from '@utils/posts';
 import { getSeoAlternates } from '@utils/seo';
 
 const lang = 'pt';
 const t = getTranslations(lang);
 const posts = await getPublishedPostsByLang(lang);
-const latestPosts = posts.slice(0, 8);
+const featuredPost = getFeaturedPost(posts);
+const latestPosts = posts.slice(0, 6);
 const languageUrls = {
   pt: homeUrl('pt'),
   en: homeUrl('en')
@@ -24,58 +28,19 @@ const languageUrls = {
   languageUrls={languageUrls}
   alternates={getSeoAlternates(languageUrls)}
 >
-  <section class="page-shell py-8">
-    <div class="rounded-xl border border-grey-150 bg-grey-25 p-6 transition-colors dark:border-grey-600 dark:bg-grey-900">
-      <div class="flex flex-col lg:flex-row items-baseline gap-4 lg:justify-between lg:items-center pb-6">
-        <div class="font-bold text-3xl lg:flex lg:gap-2">
-          <h1>{t.hero.titlePrefix}</h1>
-          <span class="text-primary-500" id="typed-topic" data-topics={JSON.stringify(t.hero.topics)}></span>
-        </div>
-        <div class="flex gap-4 items-center">
-          <a href="https://www.instagram.com/devjunr" target="_blank" rel="noreferrer" class="p-3 rounded-full bg-[#ff447a33]" aria-label="Instagram">
-            <img src="/images/instagram.png" alt="" />
-          </a>
-          <a href="https://www.linkedin.com/in/fcojunr/" target="_blank" rel="noreferrer" class="p-3 rounded-full bg-[#0277b533]" aria-label="LinkedIn">
-            <img src="/images/linkedin.png" alt="" />
-          </a>
-        </div>
-      </div>
-      <p class="w-full pb-10 text-grey-500 dark:text-grey-300 lg:w-3/5">
-        {t.hero.description}
-      </p>
-      <div class="max-w-3xl">
-        <NewsletterForm lang={lang} />
-      </div>
+  <HeroSection lang={lang} />
+
+  <section id={t.home.categoriesId} class="page-shell scroll-mt-28 py-12">
+    <div class="mb-8 max-w-2xl">
+      <h2 class="text-2xl font-bold text-grey-800 dark:text-grey-50">{t.home.categoriesTitle}</h2>
+      <p class="mt-2 text-grey-500 dark:text-grey-300">{t.home.categoriesDescription}</p>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {t.home.categories.map((category) => <CategoryCard {...category} />)}
     </div>
   </section>
 
-  <section class="page-shell py-8">
-    <div class="flex gap-4 items-center pb-8">
-      <hr class="w-full flex-1 border-grey-150 dark:border-grey-600" />
-      <h2 class="text-xl font-bold">{t.posts.articles}</h2>
-      <hr class="w-full flex-1 border-grey-150 dark:border-grey-600" />
-    </div>
-    <PostList posts={latestPosts} lang={lang} />
-    <div class="mt-8 text-center">
-      <a href={articlesUrl(lang)} class="font-semibold text-primary-400 hover:text-primary-300">{t.nav.articles}</a>
-    </div>
-  </section>
-
-  <script>
-    import Typed from 'typed.js';
-
-    const typedTopic = document.getElementById('typed-topic');
-    const topics = typedTopic?.dataset.topics ? JSON.parse(typedTopic.dataset.topics) : [];
-
-    new Typed('#typed-topic', {
-      strings: topics,
-      typeSpeed: 80,
-      backDelay: 1500,
-      loop: true,
-      onStringTyped: () => {
-        if (!typedTopic) return;
-        typedTopic.innerHTML = `${typedTopic.innerHTML}<span class="text-grey-800 dark:text-grey-50">!</span>`;
-      }
-    });
-  </script>
+  <FeaturedPost post={featuredPost} lang={lang} />
+  <PostGrid posts={latestPosts} lang={lang} />
+  <AuthorSection lang={lang} />
 </BaseLayout>

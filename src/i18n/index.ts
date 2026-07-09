@@ -41,8 +41,35 @@ export const ui = {
     hero: {
       titlePrefix: 'Reflexões e aprendizados sobre construir software com',
       description:
-        'Arquitetura, .NET, sistemas distribuídos, DDD, liderança técnica e a construção de produtos e plataformas que precisam funcionar todos os dias.\n\nSe você também gosta de discutir arquitetura, trade-offs e engenharia de software, assine a newsletter e acompanhe as próximas publicações.',
+        'Arquitetura, .NET, DDD, sistemas distribuídos, liderança técnica e engenharia de produto. Escrevo sobre desafios reais, trade-offs e decisões de arquitetura de quem constrói software todos os dias.',
       topics: ['DDD', 'Arquitetura', 'Sistemas Distribuídos', 'Event Driven', 'Cloud', 'Product Design']
+    },
+    home: {
+      readArticles: 'Ler artigos',
+      aboutMe: 'Sobre mim',
+      categoriesId: 'categorias',
+      categoriesTitle: 'Categorias',
+      categoriesDescription: 'Temas recorrentes sobre arquitetura, produto e engenharia de software.',
+      featuredTitle: 'Em destaque',
+      latestTitle: 'Últimos artigos',
+      latestDescription: 'Publicações recentes sobre decisões técnicas, arquitetura e construção de sistemas reais.',
+      readPost: 'Ler artigo',
+      viewAllArticles: 'Ver todos os artigos',
+      authorId: 'sobre',
+      authorTitle: 'Olá, eu sou Francisco.',
+      authorIntro: 'Sou Software Engineer e Tech Lead.',
+      authorDescription:
+        'Trabalho diariamente desenvolvendo plataformas financeiras distribuídas utilizando .NET, DDD e Cloud. Neste blog compartilho aprendizados, decisões de arquitetura, trade-offs e experiências reais encontradas durante o desenvolvimento de software.',
+      socialLabel: 'Acompanhe também',
+      categories: [
+        { name: '.NET', count: '18 artigos', icon: 'CodeBracketIcon' },
+        { name: 'DDD', count: '10 artigos', icon: 'CubeIcon' },
+        { name: 'Cloud', count: '8 artigos', icon: 'CloudIcon' },
+        { name: 'Arquitetura', count: '15 artigos', icon: 'CircleStackIcon' },
+        { name: 'Event Driven', count: '5 artigos', icon: 'CpuChipIcon' },
+        { name: 'Sistemas Distribuídos', count: '9 artigos', icon: 'RocketLaunchIcon' },
+        { name: 'Leadership', count: '4 artigos', icon: 'AcademicCapIcon' }
+      ]
     },
     newsletter: {
       title: 'Conteúdo de dev pra dev',
@@ -92,8 +119,35 @@ export const ui = {
     hero: {
       titlePrefix: 'Reflections and lessons about building software with',
       description:
-        'Architecture, .NET, distributed systems, DDD, technical leadership, and building products and platforms that need to work every day.\n\nIf you also like discussing architecture, trade-offs, and software engineering, subscribe to the newsletter and follow the next posts.',
+        'Architecture, .NET, DDD, distributed systems, technical leadership, and product engineering. I write about real challenges, trade-offs, and architecture decisions from building software every day.',
       topics: ['DDD', 'Architecture', 'Distributed Systems', 'Event Driven', 'Cloud', 'Product Design']
+    },
+    home: {
+      readArticles: 'Read articles',
+      aboutMe: 'About me',
+      categoriesId: 'categories',
+      categoriesTitle: 'Categories',
+      categoriesDescription: 'Recurring topics about architecture, product, and software engineering.',
+      featuredTitle: 'Featured',
+      latestTitle: 'Latest articles',
+      latestDescription: 'Recent posts about technical decisions, architecture, and building real systems.',
+      readPost: 'Read article',
+      viewAllArticles: 'View all articles',
+      authorId: 'about',
+      authorTitle: 'Hi, I am Francisco.',
+      authorIntro: 'I am a Software Engineer and Tech Lead.',
+      authorDescription:
+        'I work daily building distributed financial platforms with .NET, DDD, and Cloud. On this blog I share lessons, architecture decisions, trade-offs, and real experiences from software development.',
+      socialLabel: 'Follow along',
+      categories: [
+        { name: '.NET', count: '18 articles', icon: 'CodeBracketIcon' },
+        { name: 'DDD', count: '10 articles', icon: 'CubeIcon' },
+        { name: 'Cloud', count: '8 articles', icon: 'CloudIcon' },
+        { name: 'Architecture', count: '15 articles', icon: 'CircleStackIcon' },
+        { name: 'Event Driven', count: '5 articles', icon: 'CpuChipIcon' },
+        { name: 'Distributed Systems', count: '9 articles', icon: 'RocketLaunchIcon' },
+        { name: 'Leadership', count: '4 articles', icon: 'AcademicCapIcon' }
+      ]
     },
     newsletter: {
       title: 'Developer content for developers',

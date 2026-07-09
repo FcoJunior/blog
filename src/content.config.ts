@@ -16,6 +16,7 @@ const posts = defineCollection({
     cover: z.union([image(), z.string()]).default('/images/posts/default-cover.png'),
     tags: z.array(z.string()).default([]),
     category: z.string().default('Geral'),
+    featured: z.boolean().default(false),
     draft: z.boolean().default(false),
     lang: z.enum(['pt', 'en']),
     translationKey: z.string()

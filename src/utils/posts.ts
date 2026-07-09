@@ -59,6 +59,21 @@ export function getPostCover(post: Post) {
   return (cover as ImageMetadata).src;
 }
 
+export function getFeaturedPost(posts: Post[]) {
+  return posts.find((post) => post.data.featured) ?? posts[0];
+}
+
+export function getReadingTime(post: Post, lang: Lang = 'pt') {
+  const words = (post.body ?? '').trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(words / 200));
+
+  if (lang === 'en') {
+    return `${minutes} min read`;
+  }
+
+  return `${minutes} min de leitura`;
+}
+
 export function getPostSlug(post: Post) {
   return post.data.slug ?? post.id.replace(/\/(pt|en)\.(md|mdx)$/, '').replace(/\.(md|mdx)$/, '');
 }
