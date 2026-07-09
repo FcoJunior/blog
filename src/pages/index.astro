@@ -6,7 +6,7 @@ import HeroSection from '@components/HeroSection.astro';
 import PostGrid from '@components/PostGrid.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { getTranslations, homeUrl } from '@i18n/index';
-import { getCategoryUrl, getFeaturedPost, getPublishedPostsByLang } from '@utils/posts';
+import { formatArticleCount, getCategoryUrl, getFeaturedPost, getPostCountByCategory, getPublishedPostsByLang } from '@utils/posts';
 import { getSeoAlternates } from '@utils/seo';
 
 const lang = 'pt';
@@ -36,7 +36,13 @@ const languageUrls = {
       <p class="mt-2 text-grey-500 dark:text-grey-300">{t.home.categoriesDescription}</p>
     </div>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {t.home.categories.map((category) => <CategoryCard {...category} href={getCategoryUrl(lang, category.name)} />)}
+      {t.home.categories.map((category) => (
+        <CategoryCard
+          {...category}
+          count={formatArticleCount(getPostCountByCategory(posts, category.name), lang)}
+          href={getCategoryUrl(lang, category.name)}
+        />
+      ))}
     </div>
   </section>
 

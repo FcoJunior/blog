@@ -63,6 +63,20 @@ export function getFeaturedPost(posts: Post[]) {
   return posts.find((post) => post.data.featured) ?? posts[0];
 }
 
+export function getPostCountByCategory(posts: Post[], category: string) {
+  const categorySlug = slugify(category);
+
+  return posts.filter((post) => slugify(post.data.category) === categorySlug).length;
+}
+
+export function formatArticleCount(count: number, lang: Lang = 'pt') {
+  if (lang === 'en') {
+    return count === 1 ? '1 article' : `${count} articles`;
+  }
+
+  return count === 1 ? '1 artigo' : `${count} artigos`;
+}
+
 export function getReadingTime(post: Post, lang: Lang = 'pt') {
   const words = (post.body ?? '').trim().split(/\s+/).filter(Boolean).length;
   const minutes = Math.max(1, Math.ceil(words / 200));
