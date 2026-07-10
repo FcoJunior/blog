@@ -31,7 +31,7 @@ updatedDate: 2026-07-09
 slug: "meu-artigo"
 cover: "./cover.png"
 tags: ["dotnet", "arquitetura", "ddd"]
-category: "Arquitetura"
+category: "Arquitetura de Software"
 draft: false
 lang: "pt"
 translationKey: "meu-artigo"
@@ -54,7 +54,7 @@ updatedDate: 2026-07-09
 slug: "my-article"
 cover: "./cover.png"
 tags: ["dotnet", "architecture", "ddd"]
-category: "Architecture"
+category: "Software Architecture"
 draft: false
 lang: "en"
 translationKey: "meu-artigo"

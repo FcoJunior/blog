@@ -3,14 +3,10 @@ import { categoriesUrl } from '@i18n/index';
 import { slugify } from '@utils/posts';
 
 export type CategoryId =
-  | 'dotnet'
-  | 'ddd'
-  | 'cloud'
-  | 'architecture'
-  | 'event-driven'
-  | 'distributed-systems'
-  | 'leadership'
-  | 'front-end';
+  | 'software-architecture'
+  | 'software-engineering'
+  | 'cloud-platform'
+  | 'technical-leadership';
 
 export type CategoryColor = 'blue' | 'indigo' | 'emerald' | 'sky' | 'violet' | 'cyan' | 'amber' | 'rose' | 'slate';
 
@@ -34,43 +30,10 @@ export interface CategoryMetadata {
 }
 
 export const categories: Record<CategoryId, CategoryConfig> = {
-  dotnet: {
-    id: 'dotnet',
-    slug: { pt: 'net', en: 'net' },
-    title: { pt: '.NET', en: '.NET' },
-    description: {
-      pt: 'Conteúdos sobre C#, ASP.NET Core, arquitetura e desenvolvimento de aplicações modernas.',
-      en: 'Articles about C#, ASP.NET Core, architecture, and modern application development.'
-    },
-    icon: 'CodeBracketIcon',
-    color: 'indigo'
-  },
-  ddd: {
-    id: 'ddd',
-    slug: { pt: 'ddd', en: 'ddd' },
-    title: { pt: 'DDD', en: 'DDD' },
-    description: {
-      pt: 'Modelagem de domínio, Value Objects, Aggregates e padrões estratégicos.',
-      en: 'Domain modeling, Value Objects, Aggregates, and strategic design patterns.'
-    },
-    icon: 'CubeIcon',
-    color: 'emerald'
-  },
-  cloud: {
-    id: 'cloud',
-    slug: { pt: 'cloud', en: 'cloud' },
-    title: { pt: 'Cloud', en: 'Cloud' },
-    description: {
-      pt: 'Arquiteturas, deploys, operação e decisões práticas para sistemas em nuvem.',
-      en: 'Architecture, deployments, operations, and practical decisions for cloud systems.'
-    },
-    icon: 'CloudIcon',
-    color: 'sky'
-  },
-  architecture: {
-    id: 'architecture',
-    slug: { pt: 'arquitetura', en: 'architecture' },
-    title: { pt: 'Arquitetura', en: 'Architecture' },
+  'software-architecture': {
+    id: 'software-architecture',
+    slug: { pt: 'arquitetura-de-software', en: 'software-architecture' },
+    title: { pt: 'Arquitetura de Software', en: 'Software Architecture' },
     description: {
       pt: 'Artigos sobre decisões de arquitetura, organização de código, DDD, integração entre sistemas e trade-offs encontrados durante o desenvolvimento de software.',
       en: 'Articles about architecture decisions, code organization, DDD, system integration, and trade-offs found while building software.'
@@ -78,49 +41,38 @@ export const categories: Record<CategoryId, CategoryConfig> = {
     icon: 'CircleStackIcon',
     color: 'blue'
   },
-  'event-driven': {
-    id: 'event-driven',
-    slug: { pt: 'event-driven', en: 'event-driven' },
-    title: { pt: 'Event Driven', en: 'Event Driven' },
+  'software-engineering': {
+    id: 'software-engineering',
+    slug: { pt: 'engenharia-de-software', en: 'software-engineering' },
+    title: { pt: 'Engenharia de Software', en: 'Software Engineering' },
     description: {
-      pt: 'Eventos, mensageria, consistência eventual e comunicação assíncrona entre serviços.',
-      en: 'Events, messaging, eventual consistency, and asynchronous communication between services.'
+      pt: 'Práticas de desenvolvimento, qualidade, documentação, produtividade e escolhas técnicas para construir software sustentável.',
+      en: 'Development practices, quality, documentation, productivity, and technical choices for building sustainable software.'
     },
-    icon: 'CpuChipIcon',
-    color: 'violet'
+    icon: 'CodeBracketIcon',
+    color: 'emerald'
   },
-  'distributed-systems': {
-    id: 'distributed-systems',
-    slug: { pt: 'sistemas-distribuidos', en: 'distributed-systems' },
-    title: { pt: 'Sistemas Distribuídos', en: 'Distributed Systems' },
+  'cloud-platform': {
+    id: 'cloud-platform',
+    slug: { pt: 'cloud-plataforma', en: 'cloud-platform' },
+    title: { pt: 'Cloud & Plataforma', en: 'Cloud & Platform' },
     description: {
-      pt: 'Escalabilidade, resiliência, integração e desenho de sistemas que operam em múltiplos componentes.',
-      en: 'Scalability, resilience, integration, and the design of systems that operate across multiple components.'
+      pt: 'Cloud, plataformas internas, deploy, operação, automação e decisões práticas para manter sistemas em produção.',
+      en: 'Cloud, internal platforms, deployment, operations, automation, and practical decisions for running systems in production.'
     },
-    icon: 'RocketLaunchIcon',
-    color: 'cyan'
+    icon: 'CloudIcon',
+    color: 'sky'
   },
-  leadership: {
-    id: 'leadership',
-    slug: { pt: 'leadership', en: 'leadership' },
-    title: { pt: 'Leadership', en: 'Leadership' },
+  'technical-leadership': {
+    id: 'technical-leadership',
+    slug: { pt: 'lideranca-tecnica', en: 'technical-leadership' },
+    title: { pt: 'Liderança Técnica', en: 'Technical Leadership' },
     description: {
       pt: 'Liderança técnica, comunicação, mentoria e decisões de engenharia em times de produto.',
       en: 'Technical leadership, communication, mentorship, and engineering decisions in product teams.'
     },
     icon: 'AcademicCapIcon',
     color: 'amber'
-  },
-  'front-end': {
-    id: 'front-end',
-    slug: { pt: 'front-end', en: 'front-end' },
-    title: { pt: 'Front-end', en: 'Front-end' },
-    description: {
-      pt: 'Interfaces, experiência do usuário, Astro, componentes e escolhas práticas para produtos web.',
-      en: 'Interfaces, user experience, Astro, components, and practical choices for web products.'
-    },
-    icon: 'BookOpenIcon',
-    color: 'rose'
   }
 };
 

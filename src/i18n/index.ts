@@ -40,19 +40,17 @@ export const ui = {
     site: {
       title: "Dev Junior",
       description:
-        "Aprendizados reais sobre desenvolvimento, arquitetura, .NET, front-end, DevOps e carreira em tecnologia.",
+        "Aprendizados reais sobre arquitetura de software, engenharia, cloud, plataforma e liderança técnica.",
     },
     hero: {
       titlePrefix: "Reflexões e aprendizados sobre construir software com",
       description:
-        "Arquitetura, .NET, DDD, sistemas distribuídos, liderança técnica e engenharia de produto. Escrevo sobre desafios reais, trade-offs e decisões de arquitetura de quem constrói software todos os dias.",
+        "Arquitetura de software, engenharia de software, cloud, plataforma e liderança técnica. Escrevo sobre desafios reais, trade-offs e decisões de quem constrói software todos os dias.",
       topics: [
-        "DDD",
-        "Arquitetura",
-        "Sistemas Distribuídos",
-        "Event Driven",
-        "Cloud",
-        "Product Design",
+        "Arquitetura de Software",
+        "Engenharia de Software",
+        "Cloud & Plataforma",
+        "Liderança Técnica",
       ],
     },
     home: {
@@ -61,7 +59,7 @@ export const ui = {
       categoriesId: "categorias",
       categoriesTitle: "Categorias",
       categoriesDescription:
-        "Temas recorrentes sobre arquitetura, produto e engenharia de software.",
+        "Temas recorrentes sobre arquitetura, engenharia, cloud, plataforma e liderança técnica.",
       featuredTitle: "Em destaque",
       latestTitle: "Últimos artigos",
       latestDescription:
@@ -72,7 +70,7 @@ export const ui = {
       authorTitle: "Olá, eu sou Francisco Junior.",
       authorIntro: "Sou Software Engineer e Tech Lead.",
       authorDescription:
-        "Trabalho diariamente desenvolvendo plataformas financeiras distribuídas utilizando .NET, DDD e Cloud. Neste blog compartilho aprendizados, decisões de arquitetura, trade-offs e experiências reais encontradas durante o desenvolvimento de software.",
+        "Trabalho diariamente desenvolvendo plataformas financeiras distribuídas. Neste blog compartilho aprendizados sobre arquitetura, engenharia, cloud, plataforma, liderança técnica e decisões reais encontradas durante o desenvolvimento de software.",
       socialLabel: "Acompanhe também",
     },
     newsletter: {
@@ -80,7 +78,7 @@ export const ui = {
       description:
         "Se curtir trocar ideia sobre desenvolvimento, arquitetura e o dia a dia real de quem codifica, entra pra newsletter do Dev Junior. Bora juntos.",
       sidebarDescription:
-        "Aqui no Dev Junior, compartilho aprendizados reais sobre desenvolvimento, arquitetura, .NET e mais. Se quiser acompanhar e trocar ideias, entra na lista da newsletter.",
+        "Aqui no Dev Junior, compartilho aprendizados reais sobre desenvolvimento, arquitetura, cloud, plataforma e liderança técnica. Se quiser acompanhar e trocar ideias, entra na lista da newsletter.",
       placeholder: "Seu e-mail aqui",
       button: "Inscreva-se",
     },
@@ -125,19 +123,17 @@ export const ui = {
     site: {
       title: "Dev Junior",
       description:
-        "Practical notes on development, architecture, .NET, front-end, DevOps and tech careers.",
+        "Practical notes on software architecture, engineering, cloud, platform, and technical leadership.",
     },
     hero: {
       titlePrefix: "Reflections and lessons about building software with",
       description:
-        "Architecture, .NET, DDD, distributed systems, technical leadership, and product engineering. I write about real challenges, trade-offs, and architecture decisions from building software every day.",
+        "Software architecture, software engineering, cloud, platform, and technical leadership. I write about real challenges, trade-offs, and decisions from building software every day.",
       topics: [
-        "DDD",
-        "Architecture",
-        "Distributed Systems",
-        "Event Driven",
-        "Cloud",
-        "Product Design",
+        "Software Architecture",
+        "Software Engineering",
+        "Cloud & Platform",
+        "Technical Leadership",
       ],
     },
     home: {
@@ -146,7 +142,7 @@ export const ui = {
       categoriesId: "categories",
       categoriesTitle: "Categories",
       categoriesDescription:
-        "Recurring topics about architecture, product, and software engineering.",
+        "Recurring topics about architecture, engineering, cloud, platform, and technical leadership.",
       featuredTitle: "Featured",
       latestTitle: "Latest articles",
       latestDescription:
@@ -157,7 +153,7 @@ export const ui = {
       authorTitle: "Hi, I am Francisco Junior.",
       authorIntro: "I am a Software Engineer and Tech Lead.",
       authorDescription:
-        "I work daily building distributed financial platforms with .NET, DDD, and Cloud. On this blog I share lessons, architecture decisions, trade-offs, and real experiences from software development.",
+        "I work daily building distributed financial platforms. On this blog I share lessons about architecture, engineering, cloud, platform, technical leadership, and real decisions from software development.",
       socialLabel: "Follow along",
     },
     newsletter: {
@@ -165,7 +161,7 @@ export const ui = {
       description:
         "If you enjoy discussing development, architecture, and the real daily work of building software, join the Dev Junior newsletter.",
       sidebarDescription:
-        "Here at Dev Junior, I share practical lessons about development, architecture, .NET and more. Join the newsletter to follow along and exchange ideas.",
+        "Here at Dev Junior, I share practical lessons about development, architecture, cloud, platform, and technical leadership. Join the newsletter to follow along and exchange ideas.",
       placeholder: "Your email here",
       button: "Subscribe",
     },
