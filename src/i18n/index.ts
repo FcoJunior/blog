@@ -95,6 +95,14 @@ export const ui = {
         "Busca temporariamente indisponível. Tente novamente em instantes.",
       resultsLabel: "Resultados da busca",
     },
+    cookieConsent: {
+      title: "Privacidade e cookies",
+      description:
+        "Uso Google Analytics para entender visitas e melhorar o conteúdo. Posso ativar cookies de análise neste navegador?",
+      accept: "Aceitar analytics",
+      reject: "Recusar",
+      preferences: "Preferências de cookies",
+    },
     posts: {
       articles: "Artigos",
       empty: "Nenhum artigo publicado por aqui ainda.",
@@ -176,6 +184,14 @@ export const ui = {
       empty: "No results found.",
       unavailable: "Search is temporarily unavailable. Try again in a moment.",
       resultsLabel: "Search results",
+    },
+    cookieConsent: {
+      title: "Privacy and cookies",
+      description:
+        "I use Google Analytics to understand visits and improve the content. May I enable analytics cookies in this browser?",
+      accept: "Accept analytics",
+      reject: "Reject",
+      preferences: "Cookie preferences",
     },
     posts: {
       articles: "Articles",

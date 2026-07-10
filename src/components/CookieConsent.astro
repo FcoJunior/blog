@@ -1,0 +1,159 @@
+---
+import { GOOGLE_ANALYTICS_ID } from '@config/analytics';
+import { getTranslations, type Lang } from '@i18n/index';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'pt' } = Astro.props;
+const t = getTranslations(lang).cookieConsent;
+---
+
+<aside
+  data-cookie-consent
+  data-measurement-id={GOOGLE_ANALYTICS_ID}
+  class="fixed inset-x-0 bottom-0 z-50 hidden border-t border-grey-150 bg-grey-25/95 px-6 py-5 shadow-2xl backdrop-blur transition-colors dark:border-grey-600 dark:bg-grey-800/95 md:inset-x-auto md:bottom-6 md:right-6 md:max-w-md md:rounded-lg md:border"
+  aria-label={t.title}
+>
+  <div class="space-y-4">
+    <div>
+      <h2 class="text-base font-bold text-grey-800 dark:text-grey-50">{t.title}</h2>
+      <p class="mt-2 text-sm leading-6 text-grey-500 dark:text-grey-300">{t.description}</p>
+    </div>
+    <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+      <button
+        type="button"
+        data-cookie-consent-reject
+        class="inline-flex min-h-11 items-center justify-center rounded-lg border border-grey-150 px-4 text-sm font-bold text-grey-700 transition hover:border-primary-500 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-grey-600 dark:text-grey-100 dark:hover:text-primary-300"
+      >
+        {t.reject}
+      </button>
+      <button
+        type="button"
+        data-cookie-consent-accept
+        class="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary-600 px-4 text-sm font-bold text-grey-50 transition hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-grey-25 dark:focus:ring-offset-grey-800"
+      >
+        {t.accept}
+      </button>
+    </div>
+  </div>
+</aside>
+
+<script is:inline>
+  (() => {
+    const STORAGE_KEY = 'devjunior_cookie_consent';
+    const ACCEPTED = 'accepted';
+    const REJECTED = 'rejected';
+    const banner = document.querySelector('[data-cookie-consent]');
+    if (!(banner instanceof HTMLElement)) return;
+
+    const measurementId = banner.dataset.measurementId;
+    const acceptButton = banner.querySelector('[data-cookie-consent-accept]');
+    const rejectButton = banner.querySelector('[data-cookie-consent-reject]');
+
+    const getStoredConsent = () => {
+      try {
+        const value = localStorage.getItem(STORAGE_KEY);
+        return value === ACCEPTED || value === REJECTED ? value : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const storeConsent = (value) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, value);
+      } catch {
+        // The user choice still applies during this page view.
+      }
+    };
+
+    const defineGtag = () => {
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function gtag() {
+        window.dataLayer.push(arguments);
+      };
+    };
+
+    const updateConsent = (value) => {
+      defineGtag();
+      window.gtag('consent', 'update', {
+        ad_storage: value,
+        ad_user_data: value,
+        ad_personalization: value,
+        analytics_storage: value
+      });
+    };
+
+    const loadGoogleAnalytics = () => {
+      if (!measurementId || document.querySelector('script[data-google-analytics]')) return;
+
+      defineGtag();
+      window.gtag('consent', 'default', {
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted',
+        analytics_storage: 'granted'
+      });
+      window.gtag('js', new Date());
+      window.gtag('config', measurementId);
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+      script.dataset.googleAnalytics = 'true';
+      document.head.append(script);
+    };
+
+    const deleteCookie = (name, domain) => {
+      document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax${domain ? `; domain=${domain}` : ''}`;
+    };
+
+    const deleteAnalyticsCookies = () => {
+      const host = window.location.hostname;
+      const domains = ['', host, host.startsWith('www.') ? host.slice(4) : `.${host}`];
+      const names = document.cookie
+        .split(';')
+        .map((cookie) => cookie.trim().split('=')[0])
+        .filter((name) => name === '_ga' || name === '_gid' || name === '_gat' || name.startsWith('_ga_'));
+
+      names.forEach((name) => {
+        domains.forEach((domain) => deleteCookie(name, domain));
+      });
+    };
+
+    const hideBanner = () => {
+      banner.classList.add('hidden');
+    };
+
+    const showBanner = () => {
+      banner.classList.remove('hidden');
+    };
+
+    const applyConsent = (value) => {
+      storeConsent(value);
+      if (value === ACCEPTED) {
+        loadGoogleAnalytics();
+        updateConsent('granted');
+      } else {
+        updateConsent('denied');
+        deleteAnalyticsCookies();
+      }
+      hideBanner();
+    };
+
+    acceptButton?.addEventListener('click', () => applyConsent(ACCEPTED));
+    rejectButton?.addEventListener('click', () => applyConsent(REJECTED));
+    window.addEventListener('devjunior:open-cookie-consent', showBanner);
+
+    const storedConsent = getStoredConsent();
+    if (storedConsent === ACCEPTED) {
+      loadGoogleAnalytics();
+    } else if (storedConsent === REJECTED) {
+      deleteAnalyticsCookies();
+    } else {
+      showBanner();
+    }
+  })();
+</script>
