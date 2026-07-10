@@ -86,6 +86,7 @@ const t = getTranslations(lang);
   const maxResults = 8;
   const fetchLimit = 24;
   let pagefind;
+  let fallbackIndex;
   let searchTimer;
   let activeIndex = -1;
   let lastFocusedElement = null;
@@ -183,6 +184,52 @@ const t = getTranslations(lang);
     return pagefind;
   };
 
+  const normalizeSearchValue = (value) =>
+    String(value ?? '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+
+  const loadFallbackIndex = async () => {
+    if (fallbackIndex) return fallbackIndex;
+
+    const response = await fetch('/search-index.json');
+    if (!response.ok) throw new Error('Search index unavailable');
+
+    fallbackIndex = await response.json();
+    return fallbackIndex;
+  };
+
+  const runFallbackSearch = async (query) => {
+    const normalizedQuery = normalizeSearchValue(query);
+    const terms = normalizedQuery.split(/\s+/).filter(Boolean);
+    const items = await loadFallbackIndex();
+
+    return items
+      .filter((item) => {
+        const url = item.url || '';
+        const itemLangMatches = lang === 'en' ? url.startsWith('/en/') : !url.startsWith('/en/');
+        if (!itemLangMatches) return false;
+
+        const haystack = normalizeSearchValue(item.content);
+        return terms.every((term) => haystack.includes(term));
+      })
+      .map((item) => {
+        const haystack = normalizeSearchValue(item.content);
+        const title = normalizeSearchValue(item.meta?.title);
+        const score = terms.reduce((total, term) => {
+          if (title.includes(term)) return total + 4;
+          if (haystack.includes(term)) return total + 1;
+          return total;
+        }, 0);
+
+        return { item, score };
+      })
+      .sort((a, b) => b.score - a.score)
+      .map(({ item }) => item)
+      .slice(0, maxResults);
+  };
+
   const runSearch = async () => {
     if (!(input instanceof HTMLInputElement)) return;
 
@@ -215,7 +262,19 @@ const t = getTranslations(lang);
 
       renderResults(items);
     } catch {
-      setStatus(messages.unavailable);
+      try {
+        const items = await runFallbackSearch(query);
+        if (queryId !== lastQueryId) return;
+
+        if (!items.length) {
+          setStatus(messages.empty);
+          return;
+        }
+
+        renderResults(items);
+      } catch {
+        setStatus(messages.unavailable);
+      }
     }
   };
 

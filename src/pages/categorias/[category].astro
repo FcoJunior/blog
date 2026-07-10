@@ -1,27 +1,28 @@
 ---
-import PostList from '@components/PostList.astro';
+import CategoryHero from '@components/CategoryHero.astro';
+import CategoryNav from '@components/CategoryNav.astro';
+import CategoryPostGrid from '@components/CategoryPostGrid.astro';
+import { categories, getCategoryByName, getCategoryBySlug, getCategoryMetadata, listCategories } from '@config/categories';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { categoriesUrl, getTranslations } from '@i18n/index';
-import { getPublishedPostsByLang, slugify } from '@utils/posts';
+import { categoriesUrl } from '@i18n/index';
+import { getPublishedPostsByLang, slugify, type Post } from '@utils/posts';
 import { getSeoAlternates } from '@utils/seo';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPostsByLang('pt');
-  const categories = new Map();
-  const t = getTranslations('pt');
+  const categoryMap = new Map<string, { category: string; posts: Post[] }>();
 
-  for (const category of t.home.categories) {
-    const slug = slugify(category.name);
-    if (!categories.has(slug)) categories.set(slug, { category: category.name, posts: [] });
+  for (const category of listCategories('pt')) {
+    categoryMap.set(category.slug, { category: category.title, posts: [] });
   }
 
   for (const post of posts) {
-    const slug = slugify(post.data.category);
-    if (!categories.has(slug)) categories.set(slug, { category: post.data.category, posts: [] });
-    categories.get(slug).posts.push(post);
+    const category = getCategoryMetadata('pt', post.data.category);
+    if (!categoryMap.has(category.slug)) categoryMap.set(category.slug, { category: category.title, posts: [] });
+    categoryMap.get(category.slug)?.posts.push(post);
   }
 
-  return Array.from(categories.entries()).map(([slug, data]) => ({
+  return Array.from(categoryMap.entries()).map(([slug, data]) => ({
     params: { category: slug },
     props: data
   }));
@@ -29,28 +30,29 @@ export async function getStaticPaths() {
 
 const { category, posts } = Astro.props;
 const lang = 'pt';
-const t = getTranslations(lang);
 const slug = slugify(category);
+const categoryConfig = getCategoryBySlug(lang, slug) ?? getCategoryByName(lang, category);
+const categoryMetadata = getCategoryMetadata(lang, category);
+const allCategories = listCategories(lang);
+const ptSlug = categoryConfig ? categories[categoryConfig.id].slug.pt : slug;
+const enSlug = categoryConfig ? categories[categoryConfig.id].slug.en : slug;
 const languageUrls = {
-  pt: categoriesUrl('pt', slug),
-  en: categoriesUrl('en', slug)
+  pt: categoriesUrl('pt', ptSlug),
+  en: categoriesUrl('en', enSlug)
 };
 ---
 
 <BaseLayout
-  title={category}
-  description={`${t.posts.categoryDescription} ${category} no Dev Junior.`}
+  title={categoryMetadata.title}
+  description={categoryMetadata.description}
   canonical={languageUrls.pt}
   lang={lang}
   languageUrls={languageUrls}
   alternates={getSeoAlternates(languageUrls)}
 >
-  <section class="page-shell py-8">
-    <div class="flex gap-4 items-center pb-8">
-      <hr class="w-full flex-1 border-grey-150 dark:border-grey-600" />
-      <h1 class="text-xl font-bold">{category}</h1>
-      <hr class="w-full flex-1 border-grey-150 dark:border-grey-600" />
-    </div>
-    <PostList posts={posts} lang={lang} />
+  <section class="page-shell">
+    <CategoryHero category={categoryMetadata} count={posts.length} lang={lang} />
   </section>
+  <CategoryNav categories={allCategories} currentSlug={categoryMetadata.slug} lang={lang} />
+  <CategoryPostGrid posts={posts} lang={lang} />
 </BaseLayout>

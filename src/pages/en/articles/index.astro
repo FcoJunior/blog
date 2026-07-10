@@ -1,5 +1,8 @@
 ---
-import PostList from '@components/PostList.astro';
+import CategoryHero from '@components/CategoryHero.astro';
+import CategoryNav from '@components/CategoryNav.astro';
+import CategoryPostGrid from '@components/CategoryPostGrid.astro';
+import { listCategories, type CategoryMetadata } from '@config/categories';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { articlesUrl, getTranslations } from '@i18n/index';
 import { getPublishedPostsByLang } from '@utils/posts';
@@ -8,6 +11,16 @@ import { getSeoAlternates } from '@utils/seo';
 const lang = 'en';
 const t = getTranslations(lang);
 const posts = await getPublishedPostsByLang(lang);
+const categories = listCategories(lang);
+const allArticlesCategory: CategoryMetadata = {
+  id: 'fallback',
+  slug: '',
+  title: 'All articles',
+  description: 'Recent posts about development, architecture, .NET, front-end, DevOps, and tech careers.',
+  icon: 'BookOpenIcon',
+  color: 'blue',
+  href: articlesUrl(lang)
+};
 const languageUrls = {
   pt: articlesUrl('pt'),
   en: articlesUrl('en')
@@ -22,12 +35,9 @@ const languageUrls = {
   languageUrls={languageUrls}
   alternates={getSeoAlternates(languageUrls)}
 >
-  <section class="page-shell py-8">
-    <div class="flex gap-4 items-center pb-8">
-      <hr class="w-full flex-1 border-grey-150 dark:border-grey-600" />
-      <h1 class="text-xl font-bold">{t.posts.articles}</h1>
-      <hr class="w-full flex-1 border-grey-150 dark:border-grey-600" />
-    </div>
-    <PostList posts={posts} lang={lang} />
+  <section class="page-shell">
+    <CategoryHero category={allArticlesCategory} count={posts.length} lang={lang} />
   </section>
+  <CategoryNav categories={categories} lang={lang} />
+  <CategoryPostGrid posts={posts} lang={lang} />
 </BaseLayout>

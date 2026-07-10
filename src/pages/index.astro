@@ -4,9 +4,10 @@ import CategoryCard from '@components/CategoryCard.astro';
 import FeaturedPost from '@components/FeaturedPost.astro';
 import HeroSection from '@components/HeroSection.astro';
 import PostGrid from '@components/PostGrid.astro';
+import { listCategories } from '@config/categories';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { getTranslations, homeUrl } from '@i18n/index';
-import { formatArticleCount, getCategoryUrl, getFeaturedPost, getPostCountByCategory, getPublishedPostsByLang } from '@utils/posts';
+import { formatArticleCount, getFeaturedPost, getPostCountByCategory, getPublishedPostsByLang } from '@utils/posts';
 import { getSeoAlternates } from '@utils/seo';
 
 const lang = 'pt';
@@ -14,6 +15,7 @@ const t = getTranslations(lang);
 const posts = await getPublishedPostsByLang(lang);
 const featuredPost = getFeaturedPost(posts);
 const latestPosts = posts.slice(0, 6);
+const categories = listCategories(lang);
 const languageUrls = {
   pt: homeUrl('pt'),
   en: homeUrl('en')
@@ -36,11 +38,13 @@ const languageUrls = {
       <p class="mt-2 text-grey-500 dark:text-grey-300">{t.home.categoriesDescription}</p>
     </div>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {t.home.categories.map((category) => (
+      {categories.map((category) => (
         <CategoryCard
-          {...category}
-          count={formatArticleCount(getPostCountByCategory(posts, category.name), lang)}
-          href={getCategoryUrl(lang, category.name)}
+          name={category.title}
+          count={formatArticleCount(getPostCountByCategory(posts, category.title), lang)}
+          icon={category.icon}
+          href={category.href}
+          color={category.color}
         />
       ))}
     </div>

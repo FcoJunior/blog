@@ -1,7 +1,8 @@
 ---
+import { getCategoryMetadata } from '@config/categories';
 import type { Lang } from '@i18n/index';
 import type { Post } from '@utils/posts';
-import { formatDate, getCategoryUrl, getReadingTime } from '@utils/posts';
+import { formatDate, getReadingTime } from '@utils/posts';
 
 interface Props {
   post: Post;
@@ -9,11 +10,12 @@ interface Props {
 }
 
 const { post, lang } = Astro.props;
+const category = getCategoryMetadata(lang, post.data.category);
 ---
 
 <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm font-medium text-grey-500 dark:text-grey-300">
-  <a href={getCategoryUrl(lang, post.data.category)} class="transition hover:text-primary-500 dark:hover:text-primary-300">
-    {post.data.category}
+  <a href={category.href} class="transition hover:text-primary-500 dark:hover:text-primary-300">
+    {category.title}
   </a>
   <span class="text-grey-300 dark:text-grey-500">•</span>
   <span>{getReadingTime(post, lang)}</span>

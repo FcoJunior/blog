@@ -1,4 +1,6 @@
 ---
+import type { CategoryColor } from '@config/categories';
+import { getCategoryTheme } from '@utils/categoryTheme';
 import HeroIcon from './HeroIcon.astro';
 
 interface Props {
@@ -6,13 +8,15 @@ interface Props {
   count: string;
   icon: string;
   href: string;
+  color?: CategoryColor;
 }
 
-const { name, count, icon, href } = Astro.props;
+const { name, count, icon, href, color = 'slate' } = Astro.props;
+const theme = getCategoryTheme(color);
 ---
 
 <a href={href} class="flex items-center gap-4 rounded-xl border border-grey-150 bg-grey-25 p-5 transition hover:-translate-y-1 hover:border-grey-300 hover:shadow-sm dark:border-grey-600 dark:bg-grey-900 dark:hover:border-grey-500">
-  <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-grey-150 bg-grey-50 text-primary-500 dark:border-grey-600 dark:bg-grey-800">
+  <div class:list={['flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border', theme.icon]}>
     <HeroIcon name={icon} class="h-5 w-5" />
   </div>
   <div class="min-w-0">

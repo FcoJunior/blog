@@ -15,9 +15,9 @@ const t = getTranslations(lang);
 
 {
   posts.length > 0 ? (
-    <aside class="flex flex-col flex-wrap md:flex-row lg:justify-start items-start">
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       {posts.map((post) => <PostCard post={post} lang={lang} />)}
-    </aside>
+    </div>
   ) : (
     <p class="text-grey-500 dark:text-grey-300">{t.posts.empty}</p>
   )
