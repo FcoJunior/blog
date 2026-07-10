@@ -97,8 +97,13 @@ export const ui = {
       empty: 'Nenhum artigo publicado por aqui ainda.',
       coverAlt: 'Capa do artigo',
       categoryDescription: 'Artigos da categoria',
-      share: 'Compartilhe esse post',
-      shareLinkedIn: 'Compartilhar no LinkedIn'
+      inThisArticle: 'Neste artigo',
+      share: 'Compartilhar',
+      shareLinkedIn: 'Compartilhar no LinkedIn',
+      linkedin: 'LinkedIn',
+      copyLink: 'Copiar link',
+      linkCopied: 'Link copiado',
+      relatedTitle: 'Você também pode gostar'
     },
     rss: {
       title: 'Dev Junior',
@@ -174,8 +179,13 @@ export const ui = {
       empty: 'No articles published here yet.',
       coverAlt: 'Article cover',
       categoryDescription: 'Articles in the category',
-      share: 'Share this post',
-      shareLinkedIn: 'Share on LinkedIn'
+      inThisArticle: 'In this article',
+      share: 'Share',
+      shareLinkedIn: 'Share on LinkedIn',
+      linkedin: 'LinkedIn',
+      copyLink: 'Copy link',
+      linkCopied: 'Link copied',
+      relatedTitle: 'You may also like'
     },
     rss: {
       title: 'Dev Junior',

@@ -1,0 +1,61 @@
+---
+import { getTranslations, type Lang } from '@i18n/index';
+import BrandIcon from './BrandIcon.astro';
+import HeroIcon from './HeroIcon.astro';
+
+interface Props {
+  title: string;
+  url: string;
+  lang: Lang;
+}
+
+const { title, url, lang } = Astro.props;
+const t = getTranslations(lang);
+const shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
+---
+
+<section class="rounded-xl border border-grey-150 bg-grey-25 p-4 dark:border-grey-600 dark:bg-grey-900">
+  <h2 class="text-sm font-bold text-grey-800 dark:text-grey-50">{t.posts.share}</h2>
+  <div class="mt-4 flex flex-col gap-2">
+    <a
+      href={shareUrl}
+      target="_blank"
+      rel="noreferrer"
+      class="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-grey-500 transition hover:bg-grey-100 hover:text-grey-800 dark:text-grey-300 dark:hover:bg-grey-800 dark:hover:text-grey-50"
+      aria-label={t.posts.shareLinkedIn}
+    >
+      <BrandIcon name="LinkedIn" class="h-4 w-4" />
+      {t.posts.linkedin}
+    </a>
+    <button
+      type="button"
+      class="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-left text-sm font-medium text-grey-500 transition hover:bg-grey-100 hover:text-grey-800 dark:text-grey-300 dark:hover:bg-grey-800 dark:hover:text-grey-50"
+      data-copy-link={url}
+      data-copy-default={t.posts.copyLink}
+      data-copy-done={t.posts.linkCopied}
+    >
+      <HeroIcon name="ClipboardDocumentIcon" class="h-4 w-4" />
+      <span>{t.posts.copyLink}</span>
+    </button>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-link]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const url = button.dataset.copyLink;
+      const label = button.querySelector('span');
+      if (!url || !label) return;
+
+      try {
+        await navigator.clipboard.writeText(url);
+        label.textContent = button.dataset.copyDone ?? label.textContent;
+        window.setTimeout(() => {
+          label.textContent = button.dataset.copyDefault ?? label.textContent;
+        }, 1800);
+      } catch {
+        label.textContent = button.dataset.copyDefault ?? label.textContent;
+      }
+    });
+  });
+</script>

@@ -1,0 +1,83 @@
+---
+import { getTranslations, type Lang } from '@i18n/index';
+import ShareCard from './ShareCard.astro';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  title: string;
+  url: string;
+  lang: Lang;
+  headings?: Heading[];
+}
+
+const { title, url, lang, headings = [] } = Astro.props;
+const t = getTranslations(lang);
+const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+---
+
+<div class="flex flex-col gap-6 lg:sticky lg:top-24">
+  <nav class="rounded-xl border border-grey-150 bg-grey-25 p-4 dark:border-grey-600 dark:bg-grey-900" aria-label={t.posts.inThisArticle}>
+    <h2 class="text-sm font-bold text-grey-800 dark:text-grey-50">{t.posts.inThisArticle}</h2>
+    {
+      tocHeadings.length > 0 && (
+        <ol class="mt-4 space-y-2">
+          {tocHeadings.map((heading) => (
+            <li class={heading.depth === 3 ? 'pl-4' : ''}>
+              <a
+                href={`#${heading.slug}`}
+                class="block border-l border-transparent py-1 pl-3 text-sm leading-6 text-grey-500 transition hover:border-primary-400 hover:text-grey-800 dark:text-grey-300 dark:hover:text-grey-50"
+                data-toc-link={heading.slug}
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </nav>
+  <ShareCard title={title} url={url} lang={lang} />
+</div>
+
+<script>
+  const tocLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+  const headings = tocLinks
+    .map((link) => {
+      const id = link.dataset.tocLink;
+      return id ? document.getElementById(id) : null;
+    })
+    .filter((heading): heading is HTMLElement => Boolean(heading));
+
+  const setActiveLink = (id: string) => {
+    tocLinks.forEach((link) => {
+      const isActive = link.dataset.tocLink === id;
+      link.classList.toggle('border-primary-400', isActive);
+      link.classList.toggle('text-grey-800', isActive);
+      link.classList.toggle('dark:text-grey-50', isActive);
+      link.classList.toggle('font-semibold', isActive);
+    });
+  };
+
+  if (headings.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+
+        if (visible?.target.id) {
+          setActiveLink(visible.target.id);
+        }
+      },
+      { rootMargin: '-20% 0px -65% 0px', threshold: 0.01 }
+    );
+
+    headings.forEach((heading) => observer.observe(heading));
+    setActiveLink(headings[0].id);
+  }
+</script>
