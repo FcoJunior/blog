@@ -1,6 +1,6 @@
 ---
 import type { Post } from '@utils/posts';
-import { formatDate, getCategoryUrl, getPostCover, getPostUrl, getTagUrl } from '@utils/posts';
+import { formatDate, getCategoryUrl, getPostCover, getPostUrl } from '@utils/posts';
 import type { Lang } from '@i18n/index';
 import { getTranslations } from '@i18n/index';
 
@@ -23,13 +23,9 @@ const t = getTranslations(lang);
         loading="lazy"
       />
     </a>
-    <div class="flex grow flex-col gap-4 p-4 text-grey-800 dark:text-grey-50">
+      <div class="flex grow flex-col gap-4 p-4 text-grey-800 dark:text-grey-50">
       <div class="flex flex-col gap-2">
-        <div class="text-primary-400 font-mono flex flex-wrap gap-x-2 gap-y-1">
-          {post.data.tags.map((tag) => (
-            <a href={getTagUrl(lang, tag)} class="hover:text-primary-300"># {tag}</a>
-          ))}
-        </div>
+        <a href={getCategoryUrl(lang, post.data.category)} class="font-mono text-primary-400 hover:text-primary-300">{post.data.category}</a>
         <a class="font-bold text-lg hover:text-primary-500" href={getPostUrl(post)}>{post.data.title}</a>
       </div>
       <p class="grow text-justify text-grey-500 dark:text-grey-300">{post.data.description}</p>

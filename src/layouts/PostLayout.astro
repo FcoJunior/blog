@@ -54,10 +54,8 @@ for (const [itemLang, itemPost] of translatedPosts) {
             <div class="not-prose flex flex-wrap items-center justify-start gap-3 py-3 font-mono text-lg text-grey-500 dark:text-grey-200 md:justify-center">
               <div class="flex gap-4 items-center">
                 <img class="avatar avatar-48 photo h-12 w-12 rounded-full object-cover" src={getAuthorAvatarUrl(96)} alt={AUTHOR_NAME} />
-                <span>Dev Junior</span>
+                <span>Francisco Junior</span>
               </div>
-              <span class="text-primary-400">-</span>
-              <span>{tags}</span>
               <span class="text-primary-400">-</span>
               <a href={getCategoryUrl(lang, post.data.category)} class="hover:text-primary-400">{post.data.category}</a>
               <span class="text-primary-400">-</span>
@@ -70,6 +68,15 @@ for (const [itemLang, itemPost] of translatedPosts) {
               <div>
                 <slot />
               </div>
+              {
+                post.data.tags.length > 0 && (
+                  <div class="not-prose mt-10 flex flex-wrap gap-3 font-mono text-sm font-bold">
+                    {post.data.tags.map((tag) => (
+                      <span class="text-primary-500 dark:text-primary-400">#{tag}</span>
+                    ))}
+                  </div>
+                )
+              }
             </div>
           </div>
         </article>

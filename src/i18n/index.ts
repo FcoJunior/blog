@@ -97,7 +97,6 @@ export const ui = {
       empty: 'Nenhum artigo publicado por aqui ainda.',
       coverAlt: 'Capa do artigo',
       categoryDescription: 'Artigos da categoria',
-      tagDescription: 'Artigos marcados com',
       share: 'Compartilhe esse post',
       shareLinkedIn: 'Compartilhar no LinkedIn'
     },
@@ -175,7 +174,6 @@ export const ui = {
       empty: 'No articles published here yet.',
       coverAlt: 'Article cover',
       categoryDescription: 'Articles in the category',
-      tagDescription: 'Articles tagged with',
       share: 'Share this post',
       shareLinkedIn: 'Share on LinkedIn'
     },
@@ -208,10 +206,6 @@ export function articlesUrl(lang: Lang) {
 
 export function postUrl(lang: Lang, slug: string) {
   return lang === defaultLang ? `/artigos/${slug}` : `/en/articles/${slug}`;
-}
-
-export function tagsUrl(lang: Lang, tag: string) {
-  return lang === defaultLang ? `/tags/${tag}` : `/en/tags/${tag}`;
 }
 
 export function categoriesUrl(lang: Lang, category: string) {

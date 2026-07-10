@@ -1,7 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
 import type { Lang } from '@i18n/index';
-import { categoriesUrl, postUrl, tagsUrl } from '@i18n/index';
+import { categoriesUrl, postUrl } from '@i18n/index';
 
 export type Post = CollectionEntry<'posts'>;
 
@@ -40,10 +40,6 @@ export async function getPostAlternates(post: Post) {
 
 export function getPostUrl(post: Post) {
   return postUrl(post.data.lang, getPostSlug(post));
-}
-
-export function getTagUrl(lang: Lang, tag: string) {
-  return tagsUrl(lang, slugify(tag));
 }
 
 export function getCategoryUrl(lang: Lang, category: string) {
