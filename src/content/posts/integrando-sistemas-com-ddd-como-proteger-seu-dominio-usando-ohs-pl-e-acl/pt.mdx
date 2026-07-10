@@ -1,0 +1,191 @@
+---
+title: "Integrando sistemas com DDD: como proteger seu domínio usando OHS, PL e ACL"
+description: "Boas práticas com DDD para integrar sistemas externos sem contaminar o domínio da aplicação."
+pubDate: 2025-06-10
+updatedDate: 2025-06-10
+slug: "integrando-sistemas-com-ddd-como-proteger-seu-dominio-usando-ohs-pl-e-acl"
+cover: "./cover-acl-ohs-pl.png"
+tags: ["ddd", "arquitetura", "integracoes"]
+category: "DDD"
+draft: false
+lang: "pt"
+translationKey: "integrando-sistemas-com-ddd-como-proteger-seu-dominio-usando-ohs-pl-e-acl"
+---
+
+# Integrando sistemas com DDD: como proteger seu domínio usando OHS, PL e ACL
+
+Integrar com sistemas externos faz parte da realidade de praticamente qualquer sistema corporativo. APIs de terceiros, gateways de pagamento, ERPs legados, serviços de nuvem... todos exigem que o sistema "fale a língua do outro" — o que frequentemente gera acoplamento, complexidade e fragilidade.
+
+Neste post, quero mostrar como conceitos do DDD, como OHS (Open Host Service), Published Language e ACL (Anti-Corruption Layer), ajudam a manter o domínio limpo e resiliente mesmo diante dessas integrações.
+
+## Tipos de relacionamento entre contextos
+
+Antes de falarmos das soluções, vale entender rapidamente alguns tipos de relacionamento entre sistemas segundo o DDD:
+
+### Parceria
+
+Quando dois sistemas se influenciam mutuamente e há interação entre os times, o desenvolvimento pode acontecer de forma colaborativa. É o típico cenário que a gente vê dentro de uma mesma empresa, por exemplo, o sistema de pedidos trocando dados com o sistema de cobrança. Como está todo mundo do mesmo lado, dá pra sentar, alinhar as regras, definir formatos de dados, combinar a estrutura dos eventos e até ajustar os contratos ao longo do tempo. Essa flexibilidade facilita muito a integração e torna a evolução dos sistemas mais sustentável.
+
+### Cliente-Fornecedor
+
+Quando um sistema depende de outro, mas não tem poder nenhum de negociação, você está num cenário cliente-fornecedor. Sabe quando você precisa consumir a API de algum Gateway de pagamento, cloud ou de qualquer outro serviço de mercado? Eles entregam o contrato pronto e você tem que adaptar sua aplicação para integrar. Nesse tipo de relação, é fundamental ter uma camada que traduza esse contrato para dentro do seu sistema sem contaminar seu domínio.
+
+Saber qual é o tipo de relação com o sistema externo ajuda a escolher a melhor estratégia de integração.
+
+## Como o DDD ajuda a manter a casa em ordem nas integrações
+
+### Open Host Service (OHS)
+
+É um ponto de entrada oficial, documentado e bem definido que seu sistema expõe para que outros sistemas possam se comunicar com ele. Geralmente, se materializa como uma API REST, fila de eventos ou webhook.
+
+### Published Language (PL)
+
+Sempre que você expõe um OHS, ou seja, um ponto oficial para outro sistema se comunicar com o seu (como uma API ou um endpoint de webhook), você precisa deixar claro como esse canal funciona. Isso inclui:
+
+- Quais dados ele espera
+- Em que formato (JSON, XML, etc.)
+- O que cada campo significa
+- E como o consumidor deve lidar com erros ou respostas
+
+Esse "acordo" é o que chamamos de Published Language. Mesmo quando o relacionamento é cliente-fornecedor, é seu papel publicar esse contrato de forma clara. Pode ser por um Swagger/OpenAPI, um JSON, uma documentação bem feita ou até exemplos reais.
+
+### ACL (Anti-Corruption Layer)
+
+A ACL é uma camada que fica entre o seu sistema e um sistema externo. Ela serve como um escudo: protege o seu modelo de domínio de estruturas bagunçadas, nomes esquisitos e regras de negócio mal definidas que vêm de fora.
+
+Imagina que você tem um domínio bem modelado, com nomes claros e intenções explícitas. Mas aí precisa se integrar com um sistema legado, que chama boleto de "TituloFinanceiro", usa códigos mágicos e espera dados em formatos nada intuitivos. Se você deixar isso vazar pro seu domínio, acabou a clareza, acabou a segurança. É aí que entra a ACL.
+
+Ela traduz o que vem de fora pro seu mundo, e o que sai do seu sistema pro formato que o outro lado entende. Funciona como um adaptador, você implementa uma interface da aplicação e por trás dela cuida da sujeira da integração.
+
+## Um caso prático: gerar link de relatório assinado usando GCP
+
+Vamos imaginar o seguinte cenário:
+
+Você precisa disponibilizar relatórios em PDF para usuários de um sistema interno. Esses arquivos devem ser armazenados de forma segura, mas com acesso temporário via link, sem a necessidade de criar endpoints próprios para servir cada download.
+
+A decisão foi usar o Cloud Storage da GCP, aproveitando os Signed URLs, que são links com tempo de expiração e segurança embutida.
+
+Aqui entra o nosso caso de uso PublishReportUseCase, que encapsula toda essa lógica:
+
+```csharp
+public sealed class PublishReportUseCase
+{
+    private readonly StorageClient _storageClient;
+    private readonly UrlSigner _urlSigner;
+    private readonly string _bucketName;
+
+    public PublishReportUseCase(IOptions<StorageOptions> options)
+    {
+        if (options?.Value == null) throw new ArgumentNullException(nameof(options));
+
+        var settings = options.Value;
+
+        _bucketName = settings.BucketName ?? throw new ArgumentException("Bucket name is required.");
+        _storageClient = StorageClient.Create(settings.Credential);
+        _urlSigner = UrlSigner.FromCredential(settings.Credential);
+    }
+
+    public async Task<string> ExecuteAsync(Stream pdfStream, string fileName, TimeSpan expiration, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(pdfStream);
+        if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("Invalid file name.", nameof(fileName));
+
+        await _storageClient.UploadObjectAsync(
+            bucket: _bucketName,
+            objectName: fileName,
+            contentType: "application/pdf",
+            source: pdfStream,
+            cancellationToken: cancellationToken);
+
+        var signedUrl = await _urlSigner.SignAsync(
+            bucket: _bucketName,
+            objectName: fileName,
+            duration: expiration,
+            httpMethod: HttpMethod.Get,
+            cancellationToken: cancellationToken);
+
+        return signedUrl;
+    }
+}
+```
+
+Aqui o use case se contamina com o domínio da GCP, sendo necessária a referência a tipos e particularidades da conexão com o serviço da Google.
+
+Agora iremos criar um Adapter para encapsular toda a lógica de integração com a GCP, essa será nossa ACL. O PublishReportUseCase terá apenas que solicitar a url do relatório, sem se preocupar qual o serviço que será implementado. Primeiro vamos criar a interface IStoragePort:
+
+```csharp
+public interface IStoragePort
+{
+    Task<string> UploadAndGenerateSignedUrlAsync(Stream fileStream, string fileName, TimeSpan expiration);
+}
+```
+
+O domínio e a aplicação conhecem apenas a interface IStoragePort. A implementação concreta (com GCP) fica na infraestrutura, protegida por uma ACL.
+
+```csharp
+internal sealed class GcpStorageAdapter : IStoragePort
+{
+    private readonly StorageClient _storageClient;
+    private readonly UrlSigner _urlSigner;
+    private readonly string _bucketName;
+
+    public GcpStorageAdapter(IOptions<StorageOptions> options)
+    {
+        if (options?.Value == null) throw new ArgumentNullException(nameof(options));
+
+        var settings = options.Value;
+
+        _bucketName = settings.BucketName ?? throw new ArgumentException("Bucket name is required.");
+        _storageClient = StorageClient.Create(settings.Credential);
+        _urlSigner = UrlSigner.FromCredential(settings.Credential);
+    }
+
+    public async Task<string> UploadAndGenerateSignedUrlAsync(Stream fileStream, string fileName, TimeSpan expiration, CancellationToken cancellationToken)
+    {
+        await _storageClient.UploadObjectAsync(
+            bucket: _bucketName,
+            objectName: fileName,
+            contentType: "application/pdf",
+            source: fileStream,
+            cancellationToken: cancellationToken);
+
+        var signedUrl = await _urlSigner.SignAsync(
+            bucket: _bucketName,
+            objectName: fileName,
+            duration: expiration,
+            httpMethod: HttpMethod.Get,
+            cancellationToken: cancellationToken);
+
+        return signedUrl;
+    }
+}
+```
+
+Agora nosso UseCase fica assim:
+
+```csharp
+public sealed class PublishReportUseCase
+{
+    private readonly IStoragePort _storagePort;
+
+    public PublishReportUseCase(IStoragePort storagePort)
+    {
+        _storagePort = storagePort;
+    }
+
+    public async Task<string> ExecuteAsync(Stream pdfStream, string fileName, TimeSpan expiration, CancellationToken cancellationToken)
+    {
+        return await _storagePort.UploadAndGenerateSignedUrlAsync(pdfStream, fileName, expiration, cancellationToken);
+    }
+}
+```
+
+## Conclusão
+
+Integrar com sistemas externos não precisa ser sinônimo de bagunça no seu código. A verdade é que, em algum momento, todo sistema vai depender de algo que está fora do seu controle, seja um ERP interno cheio de herança técnica, ou uma API moderna da nuvem. O desafio está em fazer isso **sem deixar essas dependências vazarem para dentro do seu domínio**.
+
+Ao aplicar conceitos como **ACL**, **Published Language** e **Open Host Service**, você ganha mais do que uma arquitetura bonita: ganha segurança, clareza e liberdade para evoluir seu sistema com o tempo. Você separa o que é seu daquilo que não é, e isso, na prática, faz toda a diferença.
+
+No exemplo com GCP, vimos como um simples use case pode facilmente se contaminar com SDKs, nomenclaturas e contratos da nuvem. Mas com uma **porta bem definida (IStoragePort)** e uma **ACL (GcpStorageAdapter)**, conseguimos manter o domínio limpo, testável e desacoplado.
+
+Essas estratégias não servem apenas para projetos grandes ou super complexos. Elas são simples de implementar e trazem muito valor mesmo nos cenários mais comuns do dia a dia.
