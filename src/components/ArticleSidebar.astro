@@ -20,7 +20,7 @@ const t = getTranslations(lang);
 const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
 ---
 
-<div class="flex flex-col gap-6 lg:sticky lg:top-24">
+<div class="flex flex-col gap-6">
   <nav class="rounded-xl border border-grey-150 bg-grey-25 p-4 dark:border-grey-600 dark:bg-grey-900" aria-label={t.posts.inThisArticle}>
     <h2 class="text-sm font-bold text-grey-800 dark:text-grey-50">{t.posts.inThisArticle}</h2>
     {

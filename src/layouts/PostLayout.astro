@@ -65,7 +65,7 @@ for (const [itemLang, itemPost] of translatedPosts) {
         </div>
       </article>
 
-      <aside class="not-prose order-last lg:order-none">
+      <aside class="not-prose order-last lg:sticky lg:top-24 lg:order-none lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
         <ArticleSidebar title={post.data.title} url={new URL(getPostUrl(post), Astro.site ?? Astro.url).toString()} lang={lang} headings={headings} />
       </aside>
     </div>
