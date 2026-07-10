@@ -52,10 +52,20 @@ const label = labels[lang];
 
     const getSystemTheme = () => window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light';
     const getCurrentTheme = () => getStoredTheme() ?? getSystemTheme();
+    const themeColors = {
+      light: '#f3f3f1',
+      dark: '#141414'
+    };
+
+    const setThemeColor = (theme) => {
+      const themeColor = document.querySelector('meta[name="theme-color"]');
+      if (themeColor) themeColor.setAttribute('content', themeColors[theme]);
+    };
 
     const applyTheme = (theme) => {
       document.documentElement.classList.toggle('dark', theme === 'dark');
       document.documentElement.dataset.theme = theme;
+      setThemeColor(theme);
       button.setAttribute('aria-pressed', String(theme === 'dark'));
       button.setAttribute('aria-label', theme === 'dark' ? button.dataset.lightLabel ?? '' : button.dataset.darkLabel ?? '');
     };

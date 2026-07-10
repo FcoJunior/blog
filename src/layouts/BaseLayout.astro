@@ -38,8 +38,20 @@ const languageUrls = props.languageUrls ?? {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f3f3f1" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <script is:inline>
       (() => {
+        const themeColors = {
+          light: '#f3f3f1',
+          dark: '#141414'
+        };
+
+        const setThemeColor = (theme) => {
+          const themeColor = document.querySelector('meta[name="theme-color"]');
+          if (themeColor) themeColor.setAttribute('content', themeColors[theme]);
+        };
+
         const getStoredTheme = () => {
           try {
             const theme = localStorage.getItem('theme');
@@ -53,6 +65,7 @@ const languageUrls = props.languageUrls ?? {
 
         document.documentElement.classList.toggle('dark', theme === 'dark');
         document.documentElement.dataset.theme = theme;
+        setThemeColor(theme);
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
