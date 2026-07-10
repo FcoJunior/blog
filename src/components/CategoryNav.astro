@@ -8,27 +8,30 @@ interface Props {
   categories: CategoryMetadata[];
   currentSlug?: string;
   lang: Lang;
+  showAllLink?: boolean;
 }
 
-const { categories, currentSlug, lang } = Astro.props;
+const { categories, currentSlug, lang, showAllLink = true } = Astro.props;
 const allLabel = lang === 'en' ? 'All' : 'Todos';
 ---
 
 <nav aria-label={lang === 'en' ? 'Categories' : 'Categorias'} class="border-y border-grey-150 bg-grey-50/70 py-5 dark:border-grey-600 dark:bg-grey-800/40">
   <div class="page-shell">
     <div class="flex flex-wrap justify-center gap-3">
-      <a
-        href={articlesUrl(lang)}
-        class:list={[
-          'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition',
-          !currentSlug
-            ? 'border-primary-300 bg-primary-50 text-primary-700 dark:border-primary-700 dark:bg-primary-950 dark:text-primary-200'
-            : 'border-grey-150 bg-grey-25 text-grey-600 hover:-translate-y-0.5 hover:border-grey-300 hover:text-grey-800 dark:border-grey-600 dark:bg-grey-900 dark:text-grey-300 dark:hover:border-grey-500 dark:hover:text-grey-50'
-        ]}
-      >
-        <HeroIcon name="BookOpenIcon" class="h-4 w-4" />
-        {allLabel}
-      </a>
+      {showAllLink && (
+        <a
+          href={articlesUrl(lang)}
+          class:list={[
+            'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition',
+            !currentSlug
+              ? 'border-primary-300 bg-primary-50 text-primary-700 dark:border-primary-700 dark:bg-primary-950 dark:text-primary-200'
+              : 'border-grey-150 bg-grey-25 text-grey-600 hover:-translate-y-0.5 hover:border-grey-300 hover:text-grey-800 dark:border-grey-600 dark:bg-grey-900 dark:text-grey-300 dark:hover:border-grey-500 dark:hover:text-grey-50'
+          ]}
+        >
+          <HeroIcon name="BookOpenIcon" class="h-4 w-4" />
+          {allLabel}
+        </a>
+      )}
       {categories.map((category) => {
         const theme = getCategoryTheme(category.color);
 
