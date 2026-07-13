@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '@i18n/index';
-import { homeUrl, languageConfig, languages } from '@i18n/index';
+import { getTranslations, homeUrl, languageConfig, languages } from '@i18n/index';
 
 interface Props {
   lang: Lang;
@@ -8,10 +8,25 @@ interface Props {
 }
 
 const { lang, urls = {} } = Astro.props;
+const t = getTranslations(lang);
 
 ---
 
-<div class="flex items-center gap-1 rounded-2xl border border-grey-150 bg-grey-25 p-1 text-sm font-semibold text-grey-500 transition-colors dark:border-grey-600 dark:bg-grey-700 dark:text-grey-200">
+<div class="relative sm:hidden">
+  <select
+    data-language-select
+    aria-label={t.nav.languageSwitcher}
+    class="h-10 w-16 rounded-2xl border border-grey-150 bg-grey-25 px-3 text-sm font-semibold text-grey-600 shadow-lg transition focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-grey-600 dark:bg-grey-700 dark:text-grey-100"
+  >
+    {languages.map((item) => (
+      <option value={urls[item] ?? homeUrl(item)} selected={item === lang}>
+        {languageConfig[item].label}
+      </option>
+    ))}
+  </select>
+</div>
+
+<div class="hidden items-center gap-1 rounded-2xl border border-grey-150 bg-grey-25 p-1 text-sm font-semibold text-grey-500 transition-colors dark:border-grey-600 dark:bg-grey-700 dark:text-grey-200 sm:flex">
   {languages.map((item) => (
     <a
       href={urls[item] ?? homeUrl(item)}
@@ -40,3 +55,13 @@ const { lang, urls = {} } = Astro.props;
     </a>
   ))}
 </div>
+
+<script is:inline>
+  document.querySelectorAll('[data-language-select]').forEach((select) => {
+    select.addEventListener('change', () => {
+      if (select instanceof HTMLSelectElement && select.value) {
+        window.location.href = select.value;
+      }
+    });
+  });
+</script>

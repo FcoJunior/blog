@@ -14,14 +14,14 @@ const { lang = 'pt', languageUrls = {} } = Astro.props;
 ---
 
 <div class="page-shell fixed z-20 w-full border-b border-grey-150 bg-grey-75/95 backdrop-blur transition-colors dark:border-grey-600 dark:bg-grey-900/95">
-  <nav class="flex items-center justify-between gap-3 py-3 sm:gap-6">
-    <div>
-      <a href={homeUrl(lang)} aria-label="Dev Junior">
-        <img class="h-10 w-auto dark:hidden lg:h-12" src="/images/Logo-Light.png" alt="Dev Junior" />
-        <img class="hidden h-10 w-auto dark:block lg:h-12" src="/images/Logo-Dark.png" alt="Dev Junior" />
+  <nav class="flex items-center justify-between gap-2 py-3 sm:gap-6">
+    <div class="shrink-0">
+      <a href={homeUrl(lang)} aria-label="Dev Junior" class="inline-flex shrink-0">
+        <img class="h-10 w-auto shrink-0 object-contain dark:hidden lg:h-12" src="/images/Logo-Light.png" alt="Dev Junior" />
+        <img class="hidden h-10 w-auto shrink-0 object-contain dark:block lg:h-12" src="/images/Logo-Dark.png" alt="Dev Junior" />
       </a>
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
       <LanguageSwitcher lang={lang} urls={languageUrls} />
       <ThemeToggle lang={lang} />
       <SearchCommand lang={lang} />

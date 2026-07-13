@@ -13,13 +13,17 @@ const t = getTranslations(lang);
 <button
   type="button"
   data-search-trigger
-  class="group flex w-32 items-center justify-between gap-2 rounded-2xl border border-grey-150 bg-grey-25 px-3 py-2 text-left text-grey-500 shadow-lg transition hover:border-primary-500 hover:text-grey-800 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-grey-600 dark:bg-grey-700 dark:text-grey-300 dark:hover:text-grey-50 sm:w-auto sm:min-w-40 sm:gap-4 sm:px-4"
+  class="group flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-grey-150 bg-grey-25 p-0 text-left text-grey-500 shadow-lg transition hover:border-primary-500 hover:text-grey-800 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-grey-600 dark:bg-grey-700 dark:text-grey-300 dark:hover:text-grey-50 sm:w-auto sm:min-w-40 sm:justify-between sm:gap-4 sm:px-4 sm:py-2"
   aria-haspopup="dialog"
+  aria-label={t.search.title}
 >
-  <span>{t.search.trigger}</span>
+  <svg class="h-5 w-5 sm:hidden" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"></path>
+  </svg>
+  <span class="hidden sm:inline">{t.search.trigger}</span>
   <kbd
     data-search-shortcut
-    class="rounded-lg border border-grey-150 bg-grey-75 px-2 py-0.5 font-mono text-xs text-grey-500 group-hover:text-grey-800 dark:border-grey-600 dark:bg-grey-900 dark:text-grey-200 dark:group-hover:text-grey-50"
+    class="hidden rounded-lg border border-grey-150 bg-grey-75 px-2 py-0.5 font-mono text-xs text-grey-500 group-hover:text-grey-800 dark:border-grey-600 dark:bg-grey-900 dark:text-grey-200 dark:group-hover:text-grey-50 sm:inline-block"
   >
     Ctrl K
   </kbd>
