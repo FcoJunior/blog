@@ -63,6 +63,15 @@ for (const [itemLang, itemPost] of translatedPosts) {
         <div class="prose prose-lg max-w-none text-grey-500 dark:prose-invert dark:text-grey-100 lg:prose-xl prose-headings:scroll-mt-28 prose-headings:font-bold prose-p:leading-8 prose-a:font-medium">
           <slot />
         </div>
+        {
+          post.data.tags.length > 0 && (
+            <div class="not-prose mt-10 flex flex-wrap gap-3 font-mono text-md italic font-bold">
+              {post.data.tags.map((tag) => (
+                <span class="text-primary-500 dark:text-primary-400">#{tag}</span>
+              ))}
+            </div>
+          )
+        }
       </article>
 
       <aside class="not-prose order-last lg:sticky lg:top-24 lg:order-none lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
